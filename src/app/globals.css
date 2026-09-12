@@ -1,13 +1,13 @@
 :root {
-  --paper: #4B0101;
-  --paper-raised: #161510;
-  --ink: #ede8d9;
-  --ink-soft: #8e886f;
+  --paper: #000000;
+  --paper-raised: #120404;
+  --ink: #c41230;
+  --ink-soft: #7a1b2a;
   --teal: #7fb3ae;
   --teal-soft: #5c8a85;
   --amber: #e0985c;
-  --line: #fff;
-  --focus: #7fb3ae;
+  --line: #c41230;
+  --focus: #c41230;
   --sidebar-w: 236px;
   --danger: #a4503a;
 }
@@ -112,6 +112,15 @@ button {
 .brand a {
   text-decoration: none;
 }
+.brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-mark img {
+  display: block;
+  flex-shrink: 0;
+}
 .brand .name {
   font-size: 22px;
   letter-spacing: 0.01em;
@@ -147,7 +156,7 @@ nav.filters a {
 }
 nav.filters .active {
   color: var(--ink);
-  border-color: #fff;
+  border-color: var(--line);
 }
 nav.filters button:hover,
 nav.filters a:hover {
@@ -203,10 +212,16 @@ nav.filters a:hover {
   border-bottom: 0.5px solid var(--line);
 }
 .mobile-topbar .name {
-  font-family: var(--font-fraunces), serif;
-  font-size: 19px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
   color: var(--ink);
+  font-family: var(--font-fraunces), serif;
+  font-size: 18px;
+}
+.mobile-topbar .name img {
+  display: block;
 }
 
 .hamburger {
@@ -339,7 +354,7 @@ footer.site {
 .card-meta .cat {
   font-size: 10.5px;
   letter-spacing: 0.06em;
-  color: var(--amber);
+  color: #ff4d5e;
   display: block;
   margin-bottom: 3px;
 }
@@ -352,7 +367,7 @@ footer.site {
 }
 .card-meta .year {
   font-size: 11px;
-  color: #cfcabb;
+  color: #e8a5ac;
   font-variant-numeric: tabular-nums;
 }
 @media (max-width: 520px) {

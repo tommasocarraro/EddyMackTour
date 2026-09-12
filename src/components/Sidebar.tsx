@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -28,7 +29,8 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
     <>
       <div className="mobile-topbar">
         <Link className="name" href="/">
-          Eddy Mack
+          <Image src="/logo/logo-mark-white.png" alt="" width={32} height={34} priority />
+          <span>Eddy Mack</span>
         </Link>
         <button
           className={`hamburger${open ? " open" : ""}`}
@@ -43,7 +45,8 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
       <nav className={`sidebar${open ? " open" : ""}`}>
         <div>
           <div className="brand">
-            <Link href="/" onClick={close}>
+            <Link href="/" onClick={close} className="brand-mark">
+              <Image src="/logo/logo-mark-white.png" alt="Eddy Mack" width={56} height={60} priority />
               <span className="name">Eddy Mack</span>
             </Link>
             <span className="role">
