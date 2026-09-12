@@ -94,7 +94,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
         )}
 
         <footer className="site">
-          <span>© {new Date().getFullYear()} Eddy Mack</span>
+          <span>© {new Date().getFullYear()} Eddy Mack Tour</span>
           <span>Reel available on request</span>
         </footer>
       </div>

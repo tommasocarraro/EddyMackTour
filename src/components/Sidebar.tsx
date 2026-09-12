@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 type Props = {
@@ -14,6 +14,7 @@ type Props = {
 export default function Sidebar({ categories, activeCategory, studioMode }: Props) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   function close() {
     setOpen(false);
@@ -30,7 +31,7 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
       <div className="mobile-topbar">
         <Link className="name" href="/">
           <Image src="/logo/logo-mark-white.png" alt="" width={32} height={34} priority />
-          <span>Eddy Mack</span>
+          <span>Eddy Mack Tour</span>
         </Link>
         <button
           className={`hamburger${open ? " open" : ""}`}
@@ -46,8 +47,8 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
         <div>
           <div className="brand">
             <Link href="/" onClick={close} className="brand-mark">
-              <Image src="/logo/logo-mark-white.png" alt="Eddy Mack" width={56} height={60} priority />
-              <span className="name">Eddy Mack</span>
+              <Image src="/logo/logo-mark-white.png" alt="Eddy Mack Tour" width={56} height={60} priority />
+              <span className="name">Eddy Mack Tour</span>
             </Link>
             <span className="role">
               Director &amp; Editor
@@ -64,7 +65,7 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
               </>
             ) : (
               <>
-                <Link href="/" onClick={close} className={!activeCategory ? "active" : ""}>
+                <Link href="/" onClick={close} className={pathname === "/" && !activeCategory ? "active" : ""}>
                   All
                 </Link>
                 {categories.map((c) => (
@@ -80,6 +81,13 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
               </>
             )}
           </nav>
+          {!studioMode && (
+            <nav className="filters filters-secondary">
+              <Link href="/about" onClick={close} className={pathname === "/about" ? "active" : ""}>
+                About
+              </Link>
+            </nav>
+          )}
         </div>
         <div className="sidebar-bottom">
           {studioMode ? (
@@ -92,7 +100,7 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
             </Link>
           )}
           <div className="credit">
-            © {new Date().getFullYear()} Eddy Mack
+            © {new Date().getFullYear()} Eddy Mack Tour
             <br />
             hello@eddymack.tour
           </div>

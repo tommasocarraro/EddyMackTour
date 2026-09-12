@@ -1,4 +1,4 @@
-# Eddy Mack — video portfolio
+# Eddy Mack Tour — video portfolio
 
 A portfolio website for a videomaker whose work lives on YouTube. Visitors browse a
 gallery of projects and watch them in place; the videomaker signs into a private
@@ -6,8 +6,7 @@ gallery of projects and watch them in place; the videomaker signs into a private
 
 This project exists to learn [Claude Code](https://claude.com/claude-code) by
 building something real end to end — from a first design mockup through a working
-full-stack app — rather than as a client deliverable. "Eddy Mack" is a placeholder
-name; swap in the real videomaker's name/brand when ready.
+full-stack app — rather than as a client deliverable.
 
 ## What it does
 

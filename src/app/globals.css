@@ -141,6 +141,11 @@ nav.filters {
   margin-top: 40px;
   font-size: 15px;
 }
+nav.filters-secondary {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 0.5px solid var(--line);
+}
 nav.filters button,
 nav.filters a {
   background: none;
@@ -385,6 +390,47 @@ footer.site {
   color: var(--ink-soft);
   padding: 60px 0;
   font-size: 15px;
+}
+
+/* ---- about ---- */
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 340px) minmax(0, 460px);
+  gap: 56px;
+  align-items: start;
+  padding-top: 10px;
+}
+.about-portrait {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--paper-raised);
+}
+.about-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.92);
+  display: block;
+}
+.about-copy h2 {
+  font-size: clamp(28px, 4vw, 42px);
+  margin-bottom: 22px;
+}
+.about-copy p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink);
+  max-width: 56ch;
+}
+@media (max-width: 760px) {
+  .about {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .about-portrait {
+    aspect-ratio: 4 / 3;
+    max-width: 420px;
+  }
 }
 
 /* ---- detail ---- */

@@ -1,12 +1,8 @@
-# Eddy Mack — video portfolio
+# Eddy Mack Tour — video portfolio
 
 Portfolio website for a videomaker (creations hosted on YouTube). Public gallery +
 project detail pages, plus a password-protected "Studio" area where he can add/edit
 projects, upload thumbnails, and manage categories.
-
-Note: "Eddy Mack" is a placeholder name (from the repo folder name), swap it out for
-the real videomaker's name/brand when known — it currently appears in
-`src/app/layout.tsx`, `src/components/Sidebar.tsx`, and the design mockup.
 
 ## Design reference
 
@@ -21,6 +17,11 @@ feedback:
   (no visible dividing line), no filler tiles on incomplete rows
 - Fonts: Fraunces (serif, display/titles) + Archivo (sans, UI/body)
 - Categories are many-to-many: a project can belong to more than one
+- Black + crimson red palette (`src/app/globals.css` `:root` variables), logo mark in
+  `public/logo/`, favicon files generated from it in `src/app/favicon.ico`/`icon.png`/
+  `apple-icon.png`
+- A short looping/rotating logo intro plays fullscreen on every page load
+  (`src/components/IntroLoader.tsx`), dissolving into the site after ~1.5s
 
 ## Stack
 
@@ -38,8 +39,9 @@ feedback:
 
 - `/` — gallery, filterable by category (`?category=Name`)
 - `/project/[slug]` — detail page, embeds the YouTube video
+- `/about` — bio + portrait (`public/about/portrait.jpg`)
 - `/admin/login` — sign in
-- `/admin` — dashboard: add/remove projects, manage categories (protected)
+- `/admin` — dashboard: add/edit/remove projects, add/remove categories (protected)
 
 ## Running it locally
 
@@ -74,4 +76,3 @@ Also set `SESSION_SECRET` to a long random string (e.g. `openssl rand -hex 32`).
 - Thumbnail storage is local disk — move to S3/Cloudinary/etc. before deploying to
   a platform without persistent local storage.
 - No image resizing/optimization on upload yet.
-- "Eddy Mack" placeholder branding — replace with the real name once decided.

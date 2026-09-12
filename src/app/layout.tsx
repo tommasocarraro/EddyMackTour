@@ -17,7 +17,7 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  title: "Eddy Mack — Reel",
+  title: "Eddy Mack Tour — Reel",
   description: "Director & editor based in Genoa.",
 };
 
