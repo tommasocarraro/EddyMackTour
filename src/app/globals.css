@@ -6,6 +6,8 @@
   --teal: #7fb3ae;
   --teal-soft: #5c8a85;
   --amber: #e0985c;
+  --accent: #e11d3f;
+  --accent-soft: #a80f2b;
   --line: #c41230;
   --focus: #c41230;
   --sidebar-w: 236px;
@@ -231,7 +233,7 @@ nav.filters a:hover {
   width: 38px;
   height: 38px;
   background: none;
-  border: 0.5px solid var(--line);
+  border: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -563,7 +565,7 @@ footer.site {
 }
 .btn {
   font: inherit;
-  background: var(--teal);
+  background: var(--accent);
   color: #fdfbf5;
   border: none;
   padding: 11px 20px;
@@ -572,7 +574,7 @@ footer.site {
   letter-spacing: 0.01em;
 }
 .btn:hover {
-  background: var(--teal-soft);
+  background: var(--accent-soft);
 }
 .btn:disabled {
   opacity: 0.6;
@@ -639,7 +641,7 @@ table.proj tr:last-child td {
   border: none;
   padding: 0;
   cursor: pointer;
-  color: var(--teal);
+  color: var(--accent);
   font: inherit;
 }
 .row-actions button.danger {
@@ -680,6 +682,37 @@ table.proj tr:last-child td {
 .cat-panel .pill {
   color: var(--ink);
 }
+.pill.removable {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.pill.removable button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+.pill.removable button:hover {
+  color: var(--accent);
+}
+.pill.removable button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.edit-form {
+  margin-top: 14px;
+  margin-bottom: 14px;
+  max-width: 480px;
+}
+.edit-actions {
+  margin-top: 4px;
+}
 .cat-add {
   display: flex;
   gap: 10px;
@@ -708,7 +741,7 @@ table.proj tr:last-child td {
   cursor: pointer;
 }
 .checklist input {
-  accent-color: var(--teal);
+  accent-color: var(--accent);
 }
 
 [hidden] {

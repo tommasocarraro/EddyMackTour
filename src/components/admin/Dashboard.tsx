@@ -10,6 +10,10 @@ type Project = {
   id: string;
   title: string;
   slug: string;
+  description: string;
+  youtubeUrl: string;
+  client: string | null;
+  role: string | null;
   thumbnail: string;
   year: number;
   categories: Category[];
@@ -51,8 +55,8 @@ export default function Dashboard() {
         onOpenChange={setFormOpen}
         onCreated={load}
       />
-      <ProjectsTable projects={projects} onDeleted={load} />
-      <CategoryPanel categories={categories.map((c) => c.name)} onAdded={load} />
+      <ProjectsTable projects={projects} categories={categories.map((c) => c.name)} onChanged={load} />
+      <CategoryPanel categories={categories} onAdded={load} />
     </div>
   );
 }
