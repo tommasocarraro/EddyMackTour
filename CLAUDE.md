@@ -26,7 +26,9 @@ feedback:
 ## Stack
 
 - Next.js 14 (App Router, TypeScript)
-- Prisma + SQLite (`prisma/schema.prisma`) — `Project` and `Category`, many-to-many
+- Prisma + Postgres (`prisma/schema.prisma`) — `Project` and `Category`, many-to-many.
+  Was SQLite during early local dev; moved to Postgres so the DB can live on a real
+  host instead of a single local file (see Known follow-ups)
 - Auth: single admin account (no sign-up). Credentials in `.env`, session is a signed
   httpOnly JWT cookie (`src/lib/auth.ts`), `src/middleware.ts` protects `/admin/*`
   except `/admin/login`
@@ -48,7 +50,8 @@ feedback:
 ```
 npm install
 cp .env.example .env
-# then fill in .env (see below), then:
+# then fill in .env (see below — needs a real Postgres DATABASE_URL, e.g. a free
+# instance from Neon or Railway, or a local Postgres), then:
 npm run db:push
 npm run db:seed
 npm run dev
@@ -76,3 +79,6 @@ Also set `SESSION_SECRET` to a long random string (e.g. `openssl rand -hex 32`).
 - Thumbnail storage is local disk — move to S3/Cloudinary/etc. before deploying to
   a platform without persistent local storage.
 - No image resizing/optimization on upload yet.
+- Database is Postgres now, but connecting to it still requires the host to be
+  reachable at deploy time — pick a host with a managed Postgres add-on (Railway,
+  Render, Neon) rather than wiring up a separate DB provider by hand.
