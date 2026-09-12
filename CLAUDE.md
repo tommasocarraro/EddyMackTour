@@ -32,10 +32,9 @@ feedback:
 - Auth: single admin account (no sign-up). Credentials in `.env`, session is a signed
   httpOnly JWT cookie (`src/lib/auth.ts`), `src/middleware.ts` protects `/admin/*`
   except `/admin/login`
-- Thumbnails: uploaded via `multipart/form-data`, written to `public/uploads/`
-  (gitignored) — fine for a single self-hosted server, won't survive on serverless
-  platforms with ephemeral filesystems (e.g. Vercel) without swapping in real
-  object storage later
+- Thumbnails: uploaded via `multipart/form-data`, sent straight to Cloudinary
+  (`src/lib/uploads.ts`) and referenced by their `secure_url` — no local disk
+  dependency, works on any host including ones with ephemeral filesystems
 
 ## Routes
 
@@ -72,13 +71,17 @@ with `ADMIN_EMAIL` + the plain password you chose.
 
 Also set `SESSION_SECRET` to a long random string (e.g. `openssl rand -hex 32`).
 
+### Thumbnail uploads (Cloudinary)
+
+`.env` needs `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` —
+free account at cloudinary.com, values are on its dashboard.
+
 ## Known follow-ups
 
 - `npm audit` flags Next.js 14.2.x advisories only fully patched in Next 16 (a major
   upgrade) — fine for local dev, worth revisiting before deploying publicly.
-- Thumbnail storage is local disk — move to S3/Cloudinary/etc. before deploying to
-  a platform without persistent local storage.
-- No image resizing/optimization on upload yet.
+- No image resizing/optimization on upload yet (Cloudinary can do this on the fly via
+  its URL transformation params if needed later).
 - Database is Postgres now, but connecting to it still requires the host to be
   reachable at deploy time — pick a host with a managed Postgres add-on (Railway,
   Render, Neon) rather than wiring up a separate DB provider by hand.

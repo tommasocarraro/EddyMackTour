@@ -1,8 +1,10 @@
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
-import crypto from "crypto";
+import { v2 as cloudinary } from "cloudinary";
 
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 type UploadedFile = { name: string; size: number; arrayBuffer(): Promise<ArrayBuffer> };
 
@@ -16,13 +18,18 @@ export function isUploadedFile(value: FormDataEntryValue | null): value is File 
 }
 
 export async function saveThumbnail(file: UploadedFile): Promise<string> {
-  await mkdir(UPLOAD_DIR, { recursive: true });
-
-  const ext = path.extname(file.name) || ".jpg";
-  const filename = `${crypto.randomUUID()}${ext}`;
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  await writeFile(path.join(UPLOAD_DIR, filename), buffer);
+  const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "eddy-mack-tour/thumbnails" },
+      (error, uploadResult) => {
+        if (error || !uploadResult) return reject(error ?? new Error("Cloudinary upload failed"));
+        resolve(uploadResult);
+      }
+    );
+    stream.end(buffer);
+  });
 
-  return `/uploads/${filename}`;
+  return result.secure_url;
 }
