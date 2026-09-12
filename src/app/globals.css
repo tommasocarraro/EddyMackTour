@@ -1,12 +1,12 @@
 :root {
-  --paper: #0b0b08;
+  --paper: #4B0101;
   --paper-raised: #161510;
   --ink: #ede8d9;
   --ink-soft: #8e886f;
   --teal: #7fb3ae;
   --teal-soft: #5c8a85;
   --amber: #e0985c;
-  --line: #2a281f;
+  --line: #fff;
   --focus: #7fb3ae;
   --sidebar-w: 236px;
   --danger: #a4503a;
@@ -65,6 +65,28 @@ button {
   font-family: inherit;
 }
 
+/* ---- intro loader ---- */
+.intro-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.intro-loader__video {
+  width: 70vw;
+  height: auto;
+}
+.intro-loader--out {
+  opacity: 0;
+  transform: scale(1.35);
+  pointer-events: none;
+}
+
 /* ---- shell: fixed left sidebar + main ---- */
 .sidebar {
   position: fixed;
@@ -73,7 +95,7 @@ button {
   height: 100vh;
   width: var(--sidebar-w);
   padding: 32px 26px;
-  border-right: 1px solid var(--line);
+  border-right: 0.5px solid var(--line);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -125,7 +147,7 @@ nav.filters a {
 }
 nav.filters .active {
   color: var(--ink);
-  border-color: var(--amber);
+  border-color: #fff;
 }
 nav.filters button:hover,
 nav.filters a:hover {
@@ -141,7 +163,7 @@ nav.filters a:hover {
   font-size: 12.5px;
   color: var(--ink-soft);
   text-decoration: none;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 0.5px solid var(--line);
   width: fit-content;
 }
 .studio-link:hover {
@@ -178,7 +200,7 @@ nav.filters a:hover {
   justify-content: space-between;
   padding: 14px 18px;
   background: var(--paper);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 0.5px solid var(--line);
 }
 .mobile-topbar .name {
   font-family: var(--font-fraunces), serif;
@@ -194,7 +216,7 @@ nav.filters a:hover {
   width: 38px;
   height: 38px;
   background: none;
-  border: 1px solid var(--line);
+  border: 0.5px solid var(--line);
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -253,7 +275,7 @@ nav.filters a:hover {
 }
 
 footer.site {
-  border-top: 1px solid var(--line);
+  border-top: 0.5px solid var(--line);
   margin-top: 56px;
   padding-top: 22px;
   display: flex;
@@ -267,7 +289,7 @@ footer.site {
 /* ---- gallery: mosaic ---- */
 .gallery {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 18px;
 }
 @media (max-width: 900px) {
@@ -426,13 +448,13 @@ footer.site {
   flex-direction: column;
   gap: 14px;
   font-size: 13.5px;
-  border-left: 1px solid var(--line);
+  border-left: 0.5px solid var(--line);
   padding-left: 20px;
 }
 @media (max-width: 800px) {
   .credits {
     border-left: none;
-    border-top: 1px solid var(--line);
+    border-top: 0.5px solid var(--line);
     padding-left: 0;
     padding-top: 18px;
   }
@@ -447,7 +469,7 @@ footer.site {
 }
 
 .next-project {
-  border-top: 1px solid var(--line);
+  border-top: 0.5px solid var(--line);
   margin-top: 10px;
   padding-block: 26px;
   display: flex;
@@ -484,7 +506,7 @@ footer.site {
   margin-top: 6px;
 }
 .studio-card {
-  border: 1px solid var(--line);
+  border: 0.5px solid var(--line);
   background: var(--paper-raised);
   padding: 36px;
 }
@@ -511,7 +533,7 @@ footer.site {
 .field textarea {
   font: inherit;
   padding: 10px 12px;
-  border: 1px solid var(--line);
+  border: 0.5px solid var(--line);
   background: var(--paper);
   color: var(--ink);
 }
@@ -543,7 +565,7 @@ footer.site {
 }
 .btn.ghost {
   background: none;
-  border: 1px solid var(--line);
+  border: 0.5px solid var(--line);
   color: var(--ink);
 }
 
@@ -566,12 +588,12 @@ table.proj th {
   color: var(--ink-soft);
   letter-spacing: 0.04em;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 0.5px solid var(--line);
   font-weight: 500;
 }
 table.proj td {
   padding: 14px 10px 14px 0;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 0.5px solid var(--line);
   vertical-align: middle;
 }
 table.proj tr:last-child td {
@@ -617,13 +639,13 @@ table.proj tr:last-child td {
   font-size: 11px;
   letter-spacing: 0.02em;
   color: var(--ink-soft);
-  border: 1px solid var(--line);
+  border: 0.5px solid var(--line);
   padding: 3px 9px;
   white-space: nowrap;
 }
 
 .cat-panel {
-  border: 1px solid var(--line);
+  border: 0.5px solid var(--line);
   background: var(--paper-raised);
   padding: 26px 28px;
   margin-top: 34px;
@@ -652,7 +674,7 @@ table.proj tr:last-child td {
   flex: 1;
   font: inherit;
   padding: 9px 11px;
-  border: 1px solid var(--line);
+  border: 0.5px solid var(--line);
   background: var(--paper);
   color: var(--ink);
 }

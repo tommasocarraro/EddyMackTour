@@ -17,7 +17,7 @@ feedback:
 - Fixed left sidebar nav (brand, category filters, Studio link) on desktop; slides in
   from the left via a hamburger on mobile, with the hamburger on the right and the
   brand name on the left in the mobile top bar
-- Square mosaic grid: 4 columns desktop, 3 columns mobile, separated by open gaps
+- Square mosaic grid: 5 columns desktop, 3 columns mobile, separated by open gaps
   (no visible dividing line), no filler tiles on incomplete rows
 - Fonts: Fraunces (serif, display/titles) + Archivo (sans, UI/body)
 - Categories are many-to-many: a project can belong to more than one
