@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Archivo } from "next/font/google";
+import { Fraunces, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import IntroLoader from "@/components/IntroLoader";
 
@@ -10,21 +10,21 @@ const fraunces = Fraunces({
   style: ["normal", "italic"],
 });
 
-const archivo = Archivo({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-archivo",
+  variable: "--font-sans",
   weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Eddy Mack Tour — Reel",
-  description: "Director & editor based in Genoa.",
+  title: "Eddy Mack Tour — Portfolio",
+  description: "Director & Filmmaker based in Venice.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${fraunces.variable} ${archivo.variable}`}>
+      <body className={`${fraunces.variable} ${spaceGrotesk.variable}`}>
         <IntroLoader />
         {children}
       </body>
