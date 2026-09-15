@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
+import Thumbnail from "@/components/Thumbnail";
 import { getYoutubeEmbedUrl } from "@/lib/youtube";
 
 export const dynamic = "force-dynamic";
@@ -35,14 +36,6 @@ export default async function ProjectPage({ params }: { params: { slug: string }
             &larr; All work
           </Link>
           <h2>{project.title}</h2>
-          <div className="slate">
-            <span>
-              <b>{project.categories.map((c) => c.name).join(" / ")}</b>
-            </span>
-            {project.client && <span>{project.client}</span>}
-            {project.role && <span>{project.role}</span>}
-            <span>{project.year}</span>
-          </div>
         </div>
 
         <div className="player">
@@ -54,16 +47,17 @@ export default async function ProjectPage({ params }: { params: { slug: string }
               allowFullScreen
             />
           ) : (
-            <div
-              className="still"
-              style={{ backgroundImage: `url(${project.thumbnail})` }}
-            />
+            <Thumbnail src={project.thumbnail} alt={project.title} className="still" />
           )}
         </div>
 
         <div className="detail-body">
           <p>{project.description}</p>
           <div className="credits">
+            <div>
+              <b>Category</b>
+              {project.categories.map((c) => c.name).join(" / ")}
+            </div>
             {project.client && (
               <div>
                 <b>Client</b>

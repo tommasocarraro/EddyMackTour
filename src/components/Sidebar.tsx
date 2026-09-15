@@ -30,8 +30,15 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
     <>
       <div className="mobile-topbar">
         <Link className="name" href="/">
-          <Image src="/logo/logo-mark-white.png" alt="" width={32} height={34} priority />
-          <span>Eddy Mack Tour</span>
+          <Image src="/logo/logo-mark-white.png" alt="" width={44} height={47} priority />
+          <span className="topbar-text">
+            <span className="topbar-title">Eddy Mack Tour</span>
+            <span className="topbar-role">
+              Director &amp; Filmmaker
+              <br />
+              based in Venice
+            </span>
+          </span>
         </Link>
         <button
           className={`hamburger${open ? " open" : ""}`}
@@ -48,13 +55,15 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
           <div className="brand">
             <Link href="/" onClick={close} className="brand-mark">
               <Image src="/logo/logo-mark-white.png" alt="Eddy Mack Tour" width={56} height={60} priority />
-              <span className="name">Eddy Mack Tour</span>
+              <span className="brand-text">
+                <span className="name">Eddy Mack Tour</span>
+                <span className="role">
+                  Director &amp; Filmmaker
+                  <br />
+                  based in Venice
+                </span>
+              </span>
             </Link>
-            <span className="role">
-              Director &amp; Editor
-              <br />
-              based in Genoa
-            </span>
           </div>
           <nav className="filters">
             {studioMode ? (
@@ -99,10 +108,32 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
               Studio
             </Link>
           )}
+          {!studioMode && (
+            <div className="social-links">
+              <a href="https://www.instagram.com/eddymacktourprod/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="4.2" />
+                  <circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+              <a href="https://www.youtube.com/@EddyMackTour/featured" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <rect x="2.5" y="5.5" width="19" height="13" rx="4" />
+                  <path d="M10.5 9.3v5.4l5-2.7z" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+              <a href="https://www.itsnova.com/eddymacktour" target="_blank" rel="noopener noreferrer" aria-label="Nova">
+                <svg viewBox="0 0 26 26" width="17" height="17" fill="currentColor">
+                  <path d="M2.5 25 V4.5 h5.2 l10.6 13.6 V4.5 h5.2 V25 h-5.2 L7.7 11.4 V25 z" />
+                </svg>
+              </a>
+            </div>
+          )}
           <div className="credit">
             © {new Date().getFullYear()} Eddy Mack Tour
             <br />
-            hello@eddymack.tour
+            edocarraro1998@gmail.com
           </div>
         </div>
       </nav>
