@@ -66,8 +66,8 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
             <input id="np-year" name="year" type="number" defaultValue={new Date().getFullYear()} required />
           </div>
           <div className="field">
-            <label htmlFor="np-thumb">Thumbnail</label>
-            <input id="np-thumb" name="thumbnail" type="file" accept="image/*" required />
+            <label htmlFor="np-thumb">Thumbnail (auto-filled from the YouTube link — upload to override)</label>
+            <input id="np-thumb" name="thumbnail" type="file" accept="image/*" />
           </div>
           <div className="field">
             <label>Categories</label>

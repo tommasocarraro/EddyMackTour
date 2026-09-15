@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
+import Thumbnail from "@/components/Thumbnail";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +33,7 @@ export default async function GalleryPage({
           <section className="gallery">
             {projects.map((p) => (
               <Link key={p.id} className="card" href={`/project/${p.slug}`}>
-                <div className="still" style={{ backgroundImage: `url(${p.thumbnail})` }} />
+                <Thumbnail src={p.thumbnail} alt={p.title} className="still" />
                 <div className="card-meta">
                   <span className="cat">{p.categories.map((c) => c.name).join(" / ")}</span>
                   <span className="title">{p.title}</span>

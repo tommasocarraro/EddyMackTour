@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Fragment, useRef, useState } from "react";
+import Thumbnail from "@/components/Thumbnail";
 
 type Project = {
   id: string;
@@ -51,7 +52,7 @@ export default function ProjectsTable({ projects, categories, onChanged }: Props
             <tr>
               <td>
                 <div className="row-title">
-                  <div className="thumb-sm" style={{ backgroundImage: `url(${p.thumbnail})` }} />
+                  <Thumbnail src={p.thumbnail} alt={p.title} className="thumb-sm" />
                   <b>{p.title}</b>
                 </div>
               </td>
@@ -166,7 +167,9 @@ function EditProjectForm({
         <input id={`ep-year-${project.id}`} name="year" type="number" defaultValue={project.year} required />
       </div>
       <div className="field">
-        <label htmlFor={`ep-thumb-${project.id}`}>Replace thumbnail (optional)</label>
+        <label htmlFor={`ep-thumb-${project.id}`}>
+          Replace thumbnail (optional — leave empty to keep auto-fill from the YouTube link)
+        </label>
         <input id={`ep-thumb-${project.id}`} name="thumbnail" type="file" accept="image/*" />
       </div>
       <div className="field">

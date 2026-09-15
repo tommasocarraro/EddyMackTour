@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { isAuthenticated } from "@/lib/auth";
 import { slugify } from "@/lib/slugify";
 import { saveThumbnail, isUploadedFile } from "@/lib/uploads";
+import { getYoutubeThumbnail } from "@/lib/youtube";
 
 export async function GET(request: NextRequest) {
   const category = request.nextUrl.searchParams.get("category");
@@ -37,11 +38,18 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
-  if (!isUploadedFile(thumbnailFile) || thumbnailFile.size === 0) {
-    return NextResponse.json({ error: "A thumbnail image is required." }, { status: 400 });
+  let thumbnail: string | null = null;
+  if (isUploadedFile(thumbnailFile) && thumbnailFile.size > 0) {
+    thumbnail = await saveThumbnail(thumbnailFile);
+  } else {
+    thumbnail = getYoutubeThumbnail(youtubeUrl);
   }
-
-  const thumbnail = await saveThumbnail(thumbnailFile);
+  if (!thumbnail) {
+    return NextResponse.json(
+      { error: "Couldn't get a thumbnail from that YouTube link — upload one manually." },
+      { status: 400 }
+    );
+  }
 
   const baseSlug = slugify(title);
   let slug = baseSlug;

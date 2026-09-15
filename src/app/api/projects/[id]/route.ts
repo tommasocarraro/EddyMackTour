@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAuthenticated } from "@/lib/auth";
 import { saveThumbnail, isUploadedFile } from "@/lib/uploads";
+import { getYoutubeThumbnail } from "@/lib/youtube";
 
 export async function PATCH(
   request: NextRequest,
@@ -21,6 +22,11 @@ export async function PATCH(
   const categoryNames = form.getAll("categories").map(String).filter(Boolean);
   const thumbnailFile = form.get("thumbnail");
 
+  const current = await prisma.project.findUnique({ where: { id: params.id } });
+  if (!current) {
+    return NextResponse.json({ error: "Project not found." }, { status: 404 });
+  }
+
   const data: Record<string, unknown> = {};
   if (title) data.title = String(title).trim();
   if (description) data.description = String(description).trim();
@@ -30,6 +36,9 @@ export async function PATCH(
   if (year) data.year = Number(year);
   if (isUploadedFile(thumbnailFile) && thumbnailFile.size > 0) {
     data.thumbnail = await saveThumbnail(thumbnailFile);
+  } else if (youtubeUrl && String(youtubeUrl).trim() !== current.youtubeUrl) {
+    const autoThumbnail = getYoutubeThumbnail(String(youtubeUrl).trim());
+    if (autoThumbnail) data.thumbnail = autoThumbnail;
   }
   if (categoryNames.length > 0) {
     data.categories = {
