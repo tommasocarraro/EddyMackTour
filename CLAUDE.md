@@ -76,6 +76,17 @@ Also set `SESSION_SECRET` to a long random string (e.g. `openssl rand -hex 32`).
 `.env` needs `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` —
 free account at cloudinary.com, values are on its dashboard.
 
+### YouTube title/description autofill (optional)
+
+When adding or editing a project, the Studio form calls the YouTube Data API v3
+(`src/lib/youtube.ts` `getYoutubeMetadata`, via `src/app/api/youtube-metadata/route.ts`)
+on blur of the YouTube link field to pre-fill empty title/description fields — it
+never overwrites text already typed in. Set `YOUTUBE_API_KEY` in `.env` (enable
+"YouTube Data API v3" on a Google Cloud project, then create an API key) to turn
+this on; without it, autofill silently no-ops and the admin fills those fields in
+by hand. This is separate from thumbnail autofill (`getYoutubeThumbnail`), which
+builds a static `img.youtube.com` URL and needs no key.
+
 ## Known follow-ups
 
 - `npm audit` flags Next.js 14.2.x advisories only fully patched in Next 16 (a major

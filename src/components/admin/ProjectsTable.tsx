@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Thumbnail from "@/components/Thumbnail";
 
 type Project = {
@@ -116,8 +116,47 @@ function EditProjectForm({
 }) {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [fetchingMeta, setFetchingMeta] = useState(false);
+  const [thumbnailUrl, setThumbnailUrl] = useState(project.thumbnail);
+  const [thumbnailFilePreview, setThumbnailFilePreview] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
+  const descRef = useRef<HTMLTextAreaElement>(null);
   const selectedCategories = new Set(project.categories.map((c) => c.name));
+
+  useEffect(() => {
+    return () => {
+      if (thumbnailFilePreview) URL.revokeObjectURL(thumbnailFilePreview);
+    };
+  }, [thumbnailFilePreview]);
+
+  async function onYoutubeUrlBlur(e: React.FocusEvent<HTMLInputElement>) {
+    const url = e.target.value.trim();
+    if (!url) return;
+    const titleEmpty = !titleRef.current?.value.trim();
+    const descEmpty = !descRef.current?.value.trim();
+
+    setFetchingMeta(true);
+    try {
+      const res = await fetch(`/api/youtube-metadata?url=${encodeURIComponent(url)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (titleEmpty && titleRef.current && data.title) titleRef.current.value = data.title;
+        if (descEmpty && descRef.current && data.description) descRef.current.value = data.description;
+        if (data.thumbnail) setThumbnailUrl(data.thumbnail);
+      }
+    } catch {
+      // Non-fatal — the admin can still fill these in / pick a thumbnail manually.
+    } finally {
+      setFetchingMeta(false);
+    }
+  }
+
+  function onThumbnailFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (thumbnailFilePreview) URL.revokeObjectURL(thumbnailFilePreview);
+    const file = e.target.files?.[0];
+    setThumbnailFilePreview(file ? URL.createObjectURL(file) : null);
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -144,15 +183,34 @@ function EditProjectForm({
       <h3>Edit project</h3>
       <div className="field">
         <label htmlFor={`ep-title-${project.id}`}>Title</label>
-        <input id={`ep-title-${project.id}`} name="title" defaultValue={project.title} required />
+        <input
+          id={`ep-title-${project.id}`}
+          name="title"
+          ref={titleRef}
+          defaultValue={project.title}
+          required
+        />
       </div>
       <div className="field">
         <label htmlFor={`ep-desc-${project.id}`}>Description</label>
-        <textarea id={`ep-desc-${project.id}`} name="description" defaultValue={project.description} required />
+        <textarea
+          id={`ep-desc-${project.id}`}
+          name="description"
+          ref={descRef}
+          defaultValue={project.description}
+          required
+        />
       </div>
       <div className="field">
         <label htmlFor={`ep-link-${project.id}`}>YouTube link</label>
-        <input id={`ep-link-${project.id}`} name="youtubeUrl" defaultValue={project.youtubeUrl} required />
+        <input
+          id={`ep-link-${project.id}`}
+          name="youtubeUrl"
+          defaultValue={project.youtubeUrl}
+          required
+          onBlur={onYoutubeUrlBlur}
+        />
+        {fetchingMeta && <span className="sub">Fetching details from YouTube…</span>}
       </div>
       <div className="field">
         <label htmlFor={`ep-client-${project.id}`}>Client</label>
@@ -168,9 +226,22 @@ function EditProjectForm({
       </div>
       <div className="field">
         <label htmlFor={`ep-thumb-${project.id}`}>
-          Replace thumbnail (optional — leave empty to keep auto-fill from the YouTube link)
+          Thumbnail (replace by uploading a file — otherwise it stays in sync with the YouTube link)
         </label>
-        <input id={`ep-thumb-${project.id}`} name="thumbnail" type="file" accept="image/*" />
+        {(thumbnailFilePreview ?? thumbnailUrl) && (
+          <Thumbnail
+            src={thumbnailFilePreview ?? thumbnailUrl}
+            alt="Thumbnail preview"
+            className="thumb-preview"
+          />
+        )}
+        <input
+          id={`ep-thumb-${project.id}`}
+          name="thumbnail"
+          type="file"
+          accept="image/*"
+          onChange={onThumbnailFileChange}
+        />
       </div>
       <div className="field">
         <label>Categories</label>

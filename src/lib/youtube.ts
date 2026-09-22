@@ -22,3 +22,22 @@ export function getYoutubeId(url: string): string | null {
     return null;
   }
 }
+
+export async function getYoutubeMetadata(
+  url: string
+): Promise<{ title: string; description: string } | null> {
+  const id = getYoutubeId(url);
+  const apiKey = process.env.YOUTUBE_API_KEY;
+  if (!id || !apiKey) return null;
+
+  const res = await fetch(
+    `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=${apiKey}`
+  );
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  const snippet = data.items?.[0]?.snippet;
+  if (!snippet) return null;
+
+  return { title: snippet.title ?? "", description: snippet.description ?? "" };
+}

@@ -785,6 +785,18 @@ table.proj tr:last-child td {
   padding: 8px;
   background: var(--paper-raised);
 }
+.thumb-preview {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+}
+.thumb-preview.thumb-fallback {
+  object-fit: contain;
+  padding: 16px;
+  background: var(--paper-raised);
+}
 .row-title {
   display: flex;
   align-items: center;
