@@ -41,7 +41,7 @@ feedback:
 
 - `/` — gallery, filterable by category (`?category=Name`)
 - `/project/[slug]` — detail page, embeds the YouTube video
-- `/about` — bio + portrait (`public/about/portrait.jpg`)
+- `/about` — bio + portrait (`public/about/portrait-web.jpg`, a 1200×1800 web copy of the full-size original)
 - `/admin/login` — sign in
 - `/admin` — dashboard: add/edit/remove projects, add/remove categories (protected)
 

@@ -21,7 +21,7 @@ export default async function AboutPage() {
       <div className="main">
         <section className="about">
           <div className="about-portrait">
-            <img src="/about/portrait.png" alt="Edoardo, Eddy Mack Tour" />
+            <img src="/about/portrait-web.jpg" alt="Edoardo, Eddy Mack Tour" />
           </div>
           <div className="about-copy">
             <h2>About</h2>
