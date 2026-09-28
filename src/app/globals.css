@@ -543,19 +543,19 @@ footer.site {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  row-gap: 22px;
-  column-gap: 44px;
+  row-gap: 18px;
+  column-gap: 32px;
 }
 .collab-strip li {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 54px;
-  width: 190px;
+  height: 34px;
+  width: 116px;
 }
 .collab-strip li img {
   display: block;
-  max-height: 46px;
+  max-height: 28px;
   max-width: 100%;
   width: auto;
   height: auto;
@@ -572,15 +572,15 @@ footer.site {
     margin-top: 44px;
   }
   .collab-strip ul {
-    column-gap: 28px;
-    row-gap: 18px;
+    column-gap: 22px;
+    row-gap: 14px;
   }
   .collab-strip li {
-    height: 40px;
-    width: 130px;
+    height: 26px;
+    width: 84px;
   }
   .collab-strip li img {
-    max-height: 32px;
+    max-height: 20px;
   }
 }
 
