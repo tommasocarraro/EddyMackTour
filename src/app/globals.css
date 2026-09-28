@@ -12,6 +12,8 @@
   --focus: #c41230;
   --sidebar-w: 280px;
   --danger: #a4503a;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-brand: Futura, "Futura PT", var(--font-jost), sans-serif;
 }
 
 * {
@@ -128,6 +130,7 @@ button {
   gap: 3px;
 }
 .brand .name {
+  font-family: var(--font-brand);
   font-size: 22px;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -277,7 +280,7 @@ nav.filters-secondary a.active {
   gap: 2px;
 }
 .topbar-title {
-  font-family: var(--font-fraunces), serif;
+  font-family: var(--font-brand);
   font-size: 18px;
   white-space: nowrap;
 }

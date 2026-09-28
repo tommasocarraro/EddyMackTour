@@ -15,7 +15,8 @@ feedback:
   brand name on the left in the mobile top bar
 - Square mosaic grid: 5 columns desktop, 3 columns mobile, separated by open gaps
   (no visible dividing line), no filler tiles on incomplete rows
-- Fonts: Fraunces (serif, display/titles) + Archivo (sans, UI/body)
+- Fonts: Fraunces (serif, display/titles) + Helvetica (system font stack, UI/body);
+  brand name "Eddy Mack Tour" in Futura (falls back to Jost where Futura isn't installed)
 - Categories are many-to-many: a project can belong to more than one
 - Black + crimson red palette (`src/app/globals.css` `:root` variables), logo mark in
   `public/logo/`, favicon files generated from it in `src/app/favicon.ico`/`icon.png`/

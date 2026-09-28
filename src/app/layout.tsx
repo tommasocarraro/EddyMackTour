@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Space_Grotesk } from "next/font/google";
+import { Fraunces, Jost } from "next/font/google";
 import "./globals.css";
 import IntroLoader from "@/components/IntroLoader";
 
@@ -10,10 +10,11 @@ const fraunces = Fraunces({
   style: ["normal", "italic"],
 });
 
-const spaceGrotesk = Space_Grotesk({
+// Free Futura lookalike, used where Futura itself isn't installed
+const jost = Jost({
   subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-jost",
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -23,8 +24,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${fraunces.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${jost.variable}`}>
+      <body>
         <IntroLoader />
         {children}
       </body>
