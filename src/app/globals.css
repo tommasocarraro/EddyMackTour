@@ -97,7 +97,6 @@ button {
   height: 100vh;
   width: var(--sidebar-w);
   padding: 32px 26px;
-  border-right: 0.5px solid var(--line);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -148,9 +147,7 @@ nav.filters {
   font-size: 15px;
 }
 nav.filters-secondary {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 0.5px solid var(--line);
+  margin-top: 28px;
 }
 nav.filters button,
 nav.filters a {
@@ -174,6 +171,32 @@ nav.filters .active {
 nav.filters button:hover,
 nav.filters a:hover {
   color: var(--ink);
+}
+/* About is a page, not a filter: serif italic, no left-bar indicator */
+nav.filters-secondary a {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-size: 21px;
+  color: var(--ink);
+  border-left: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+nav.filters-secondary a::after {
+  content: " \2192";
+  font-style: normal;
+  font-size: 0.8em;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+nav.filters-secondary a:hover::after,
+nav.filters-secondary a.active::after {
+  transform: translateX(4px);
+}
+nav.filters-secondary a.active {
+  text-decoration: underline;
+  text-decoration-thickness: 0.5px;
+  text-underline-offset: 5px;
 }
 
 .sidebar-bottom {
