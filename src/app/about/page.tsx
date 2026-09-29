@@ -36,6 +36,12 @@ const COLLABORATORS = [
   { name: "Fondazione Querini Stampalia", logo: "/logos/collab/querini-stampalia.svg" },
   { name: "Sherwood Festival", logo: "/logos/collab/sherwood.png" },
   { name: "Hall Padova", logo: "/logos/collab/hall-padova.png" },
+  { name: "Furla", logo: "/logos/collab/furla.png" },
+  { name: "Liu Jo", logo: "/logos/collab/liu-jo.png" },
+  { name: "Arrital", logo: "/logos/collab/arrital.png" },
+  { name: "San Carlo", logo: "/logos/collab/san-carlo.png" },
+  { name: "Guy", logo: "/logos/collab/guy.png" },
+  { name: "Junkers", logo: "/logos/collab/junkers.png" },
 ];
 
 export default async function AboutPage() {

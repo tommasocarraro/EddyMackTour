@@ -113,7 +113,9 @@ from the Studio):
    SVG or PNG with a transparent background; colour doesn't matter, since CSS
    (`filter: brightness(0) invert(1)`) renders every logo solid white. A JPG or
    anything with a solid background shows up as a white box; make the background
-   transparent first.
+   transparent first. The same goes for text coloured on a filled badge (e.g. San
+   Carlo's yellow-on-red), which vanishes unless it's cut out of the badge as
+   transparency.
 2. Add `{ name: "Brand", logo: "/logos/collab/<file>" }` to `COLLABORATORS` in
    `src/app/about/page.tsx`. List order is display order; `name` is the alt text.
 
