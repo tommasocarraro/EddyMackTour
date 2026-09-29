@@ -10,7 +10,7 @@
   --accent-soft: #a80f2b;
   --line: #c41230;
   --focus: #c41230;
-  --sidebar-w: 280px;
+  --sidebar-w: 340px;
   --danger: #a4503a;
   --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-brand: Futura, "Futura PT", var(--font-jost), sans-serif;
@@ -183,16 +183,6 @@ nav.filters-secondary a {
   border-left: none;
   padding-left: 0;
   margin-left: 0;
-}
-nav.filters-secondary a::after {
-  content: " \2192";
-  font-size: 0.9em;
-  display: inline-block;
-  transition: transform 0.2s ease;
-}
-nav.filters-secondary a:hover::after,
-nav.filters-secondary a.active::after {
-  transform: translateX(4px);
 }
 nav.filters-secondary a.active {
   text-decoration: underline;
@@ -498,7 +488,7 @@ footer.site {
   padding-top: 22px;
   border-top: 0.5px solid var(--line);
   font-family: var(--font-fraunces), serif;
-  font-style: italic;
+  font-weight: 700;
   font-size: 19px !important;
 }
 .about-contact a {
@@ -708,11 +698,11 @@ footer.site {
   backdrop-filter: blur(12px);
   animation: modal-fade 0.25s ease;
 }
-/* Viewport split in 5 columns: the dialog spans the middle 3 */
+/* Kept narrow so plenty of the blurred gallery shows around it */
 .modal {
   position: relative;
-  width: 60vw;
-  max-height: 92vh;
+  width: 44vw;
+  max-height: 84vh;
   overflow-y: auto;
   background: var(--paper);
   box-shadow:
