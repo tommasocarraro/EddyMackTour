@@ -7,3 +7,5 @@ dist/
 prisma/dev.db
 public/logo/*.mov
 tsconfig.tsbuildinfo
+# Full-size portrait original; the site serves portrait-web.jpg
+public/about/portrait.jpeg
