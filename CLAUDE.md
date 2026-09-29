@@ -101,6 +101,26 @@ this on; without it, autofill silently no-ops and the admin fills those fields i
 by hand. This is separate from thumbnail autofill (`getYoutubeThumbnail`), which
 builds a static `img.youtube.com` URL and needs no key.
 
+## Adding a collaborator logo
+
+The About page's "Selected collaborations" strip is a hardcoded list (not managed
+from the Studio):
+
+1. Put the logo file in `public/logos/collab/`, named in kebab-case (e.g. `bykilian.svg`).
+   SVG or PNG with a transparent background; colour doesn't matter, since CSS
+   (`filter: brightness(0) invert(1)`) renders every logo solid white. A JPG or
+   anything with a solid background shows up as a white box; make the background
+   transparent first.
+2. Add `{ name: "Brand", logo: "/logos/collab/<file>" }` to `COLLABORATORS` in
+   `src/app/about/page.tsx`. List order is display order; `name` is the alt text.
+
+Logos are shown at ~28px tall (20px on mobile), so prefer horizontal wordmarks: tall
+or stacked marks (e.g. Università Iuav's vertical logo) become unreadable.
+
+Clients from the owner's list still without a logo (to be supplied): Università Iuav
+di Venezia (needs a horizontal version), Kilian, Sugarmusic, Pangea Group, ALMASpace,
+70Materia, Doner Music, Light Masters.
+
 ## Known follow-ups
 
 - `npm audit` flags Next.js 14.2.x advisories only fully patched in Next 16 (a major
