@@ -45,12 +45,16 @@ feedback:
 - `/project/[slug]` — detail page, embeds the YouTube video. Clicking a card in the
   gallery opens it instead as a centered dialog over the blurred gallery (~44vw wide,
   kept narrow so the blur shows around it; closes via the X, a click outside, or Escape — all `router.back()`).
+  The dialog grows out of the clicked card and shrinks back into it on close (Web Animations
+  in `ProjectModal.tsx`, found via the card's `data-slug`; timings are the constants at the
+  top of that file). The browser back button closes it without the animation.
   This uses Next's intercepting + parallel routes: `src/app/@modal/(.)project/[slug]`
   renders `src/components/ProjectModal.tsx`, and `@modal/default.tsx` +
   `@modal/[...catchAll]` keep the slot empty elsewhere. A direct visit or refresh shows
   the full page. Both share `src/components/ProjectDetail.tsx`; the dialog intentionally
   has no "Next project" link or footer
 - `/about` — bio, portrait (`public/about/portrait-web.jpg`, a 1200×1800 web copy of the full-size original), and a bold "Contact: <email>" line
+  and a "Selected collaborations" logo strip (see "Adding a collaborator logo" below)
 - `/admin/login` — sign in
 - `/admin` — dashboard: add/edit/remove projects, add/remove categories (protected)
 

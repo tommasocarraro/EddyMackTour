@@ -696,21 +696,40 @@ footer.site {
   background: rgba(0, 0, 0, 0.5);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  animation: modal-fade 0.25s ease;
 }
 /* Kept narrow so plenty of the blurred gallery shows around it */
 .modal {
   position: relative;
   width: 44vw;
-  max-height: 84vh;
-  overflow-y: auto;
   background: var(--paper);
   box-shadow:
     0 30px 90px rgba(0, 0, 0, 0.85),
     0 0 70px rgba(196, 18, 48, 0.14);
-  padding: 34px 38px 14px;
   outline: none;
-  animation: modal-rise 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-origin: center;
+  will-change: transform, clip-path;
+}
+/* Scrolls inside .modal, so the ghost thumbnail below stays pinned to the box */
+.modal-scroll {
+  position: relative;
+  max-height: 84vh;
+  overflow-y: auto;
+  padding: 34px 38px 14px;
+}
+/* The clicked card's thumbnail, laid over the dialog while it grows/shrinks
+   (opacity is driven from ProjectModal.tsx) */
+.modal-ghost {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.modal-ghost:not([src]) {
+  display: none;
 }
 .modal-title {
   font-size: clamp(24px, 3vw, 36px);
@@ -740,20 +759,11 @@ footer.site {
 .modal-close:hover {
   transform: rotate(90deg);
 }
-@keyframes modal-fade {
-  from {
-    opacity: 0;
-  }
-}
-@keyframes modal-rise {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-}
 @media (max-width: 900px) {
   .modal {
     width: calc(100vw - 32px);
+  }
+  .modal-scroll {
     padding: 26px 20px 8px;
   }
   .modal-close {

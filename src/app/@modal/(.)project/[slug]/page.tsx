@@ -17,7 +17,7 @@ export default async function ProjectModalPage({ params }: { params: { slug: str
   if (!project) notFound();
 
   return (
-    <ProjectModal title={project.title}>
+    <ProjectModal key={project.slug} slug={project.slug} title={project.title}>
       <ProjectDetail project={project} />
     </ProjectModal>
   );

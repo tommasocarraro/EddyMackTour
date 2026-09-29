@@ -32,7 +32,7 @@ export default async function GalleryPage({
         ) : (
           <section className="gallery">
             {projects.map((p) => (
-              <Link key={p.id} className="card" href={`/project/${p.slug}`}>
+              <Link key={p.id} className="card" data-slug={p.slug} href={`/project/${p.slug}`}>
                 <Thumbnail src={p.thumbnail} alt={p.title} className="still" />
                 <div className="card-meta">
                   <span className="cat">{p.categories.map((c) => c.name).join(" / ")}</span>
