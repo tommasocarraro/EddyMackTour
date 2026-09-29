@@ -22,19 +22,12 @@ export const metadata: Metadata = {
   description: "Director & Filmmaker based in Venice.",
 };
 
-export default function RootLayout({
-  children,
-  modal,
-}: {
-  children: React.ReactNode;
-  modal: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${jost.variable}`}>
       <body>
         <IntroLoader />
         {children}
-        {modal}
       </body>
     </html>
   );

@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { PlayerReadyContext } from "@/components/YoutubePlayer";
 
 const OPEN_MS = 900;
 const CLOSE_MS = 380;
@@ -50,6 +51,7 @@ export default function ProjectModal({
   const dialogRef = useRef<HTMLDivElement>(null);
   const ghostRef = useRef<HTMLImageElement>(null);
   const closingRef = useRef(false);
+  const [playerReady, setPlayerReady] = useState(false);
 
   // Grow the dialog out of the clicked gallery card.
   useLayoutEffect(() => {
@@ -64,6 +66,7 @@ export default function ProjectModal({
     modal.focus({ preventScroll: true });
 
     if (reduceMotion) {
+      setPlayerReady(true);
       return () => {
         document.body.style.overflow = prevOverflow;
       };
@@ -71,13 +74,14 @@ export default function ProjectModal({
 
     overlay.animate([BACKDROP_CLOSED, BACKDROP_OPEN], { duration: OPEN_MS * 0.6, easing: "ease-out" });
 
+    let open: Animation;
     if (card) {
       const still = card.querySelector<HTMLImageElement>("img");
       if (still) {
         ghost.src = still.currentSrc || still.src;
         ghost.className = `modal-ghost ${still.className}`;
       }
-      modal.animate([frameOverCard(modal, card), FRAME_OPEN], { duration: OPEN_MS, easing: OPEN_EASING });
+      open = modal.animate([frameOverCard(modal, card), FRAME_OPEN], { duration: OPEN_MS, easing: OPEN_EASING });
       ghost.animate([{ opacity: 1 }, { opacity: 1, offset: 0.15 }, { opacity: 0, offset: 0.6 }, { opacity: 0 }], {
         duration: OPEN_MS,
         fill: "forwards",
@@ -86,7 +90,7 @@ export default function ProjectModal({
       card.style.visibility = "hidden";
     } else {
       // No card on screen (e.g. navigated from elsewhere): plain pop-in.
-      modal.animate(
+      open = modal.animate(
         [
           { opacity: 0, transform: "scale(0.92)" },
           { opacity: 1, transform: "scale(1)" },
@@ -95,9 +99,16 @@ export default function ProjectModal({
       );
     }
 
+    // Only start loading the YouTube player once the dialog has settled.
+    // (Rejects if the dialog is closed mid-animation; nothing to load then.)
+    open.finished.then(() => setPlayerReady(true), () => {});
+
     return () => {
       document.body.style.overflow = prevOverflow;
       if (card) card.style.visibility = "";
+      // Strict Mode re-runs this effect in dev; a leftover animation would make
+      // the re-run measure the dialog while it's shrunk onto the card.
+      [overlay, modal, ghost].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
     };
   }, [slug]);
 
@@ -169,7 +180,7 @@ export default function ProjectModal({
             </svg>
           </button>
           <h2 className="modal-title">{title}</h2>
-          {children}
+          <PlayerReadyContext.Provider value={playerReady}>{children}</PlayerReadyContext.Provider>
         </div>
         {/* Copy of the card's thumbnail, cross-faded so the tile appears to become the dialog */}
         <img ref={ghostRef} className="modal-ghost" aria-hidden="true" />

@@ -48,11 +48,14 @@ feedback:
   The dialog grows out of the clicked card and shrinks back into it on close (Web Animations
   in `ProjectModal.tsx`, found via the card's `data-slug`; timings are the constants at the
   top of that file). The browser back button closes it without the animation.
-  This uses Next's intercepting + parallel routes: `src/app/@modal/(.)project/[slug]`
-  renders `src/components/ProjectModal.tsx`, and `@modal/default.tsx` +
-  `@modal/[...catchAll]` keep the slot empty elsewhere. A direct visit or refresh shows
-  the full page. Both share `src/components/ProjectDetail.tsx`; the dialog intentionally
-  has no "Next project" link or footer
+  The dialog is opened client-side by `src/components/Gallery.tsx` from the project data
+  the gallery already loaded (no server round trip, so the animation starts on click): the
+  card's click calls `history.pushState` to `/project/[slug]`, and `Gallery` renders
+  `ProjectModal` when `usePathname()` matches. A direct visit or refresh shows the full page.
+  Both share `src/components/ProjectDetail.tsx`; the dialog intentionally has no "Next
+  project" link or footer. The YouTube iframe (`src/components/YoutubePlayer.tsx`) only
+  mounts once the open animation finishes (loading it mid-animation made it stutter), with
+  the thumbnail shown in its place until the player has loaded
 - `/about` — bio, portrait (`public/about/portrait-web.jpg`, a 1200×1800 web copy of the full-size original), and a bold "Contact: <email>" line
   and a "Selected collaborations" logo strip (see "Adding a collaborator logo" below)
 - `/admin/login` — sign in

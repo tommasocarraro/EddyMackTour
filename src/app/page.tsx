@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
-import Thumbnail from "@/components/Thumbnail";
+import Gallery from "@/components/Gallery";
 
 export const dynamic = "force-dynamic";
 
@@ -30,18 +29,20 @@ export default async function GalleryPage({
             {category ? `No projects tagged "${category}" yet.` : "No projects yet — add the first one in the Studio."}
           </p>
         ) : (
-          <section className="gallery">
-            {projects.map((p) => (
-              <Link key={p.id} className="card" data-slug={p.slug} href={`/project/${p.slug}`}>
-                <Thumbnail src={p.thumbnail} alt={p.title} className="still" />
-                <div className="card-meta">
-                  <span className="cat">{p.categories.map((c) => c.name).join(" / ")}</span>
-                  <span className="title">{p.title}</span>
-                  <span className="year">{p.year}</span>
-                </div>
-              </Link>
-            ))}
-          </section>
+          <Gallery
+            projects={projects.map((p) => ({
+              id: p.id,
+              slug: p.slug,
+              title: p.title,
+              description: p.description,
+              youtubeUrl: p.youtubeUrl,
+              thumbnail: p.thumbnail,
+              client: p.client,
+              role: p.role,
+              year: p.year,
+              categories: p.categories.map((c) => ({ name: c.name })),
+            }))}
+          />
         )}
       </div>
     </>
