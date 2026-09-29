@@ -45,9 +45,13 @@ feedback:
 - `/project/[slug]` — detail page, embeds the YouTube video. Clicking a card in the
   gallery opens it instead as a centered dialog over the blurred gallery (~44vw wide,
   kept narrow so the blur shows around it; closes via the X, a click outside, or Escape — all `router.back()`).
-  The dialog grows out of the clicked card and shrinks back into it on close (Web Animations
-  in `ProjectModal.tsx`, found via the card's `data-slug`; timings are the constants at the
-  top of that file). The browser back button closes it without the animation.
+  The dialog grows out of the clicked card and shrinks back into it on close. This is a
+  View Transition started in `Gallery.tsx`: the clicked card (found via its `data-slug`)
+  temporarily takes the dialog's `view-transition-name`s, so the thumbnail flies into the
+  player while the panel grows behind it. Timings and easing are in the "card ⇄ dialog
+  morph" block of `globals.css`. Don't animate `backdrop-filter`/`clip-path` per frame
+  (the old approach): that stuttered. Browsers without View Transitions, and reduced-motion
+  users, get an instant open/close. The browser back button closes it without the animation.
   The dialog is opened client-side by `src/components/Gallery.tsx` from the project data
   the gallery already loaded (no server round trip, so the animation starts on click): the
   card's click calls `history.pushState` to `/project/[slug]`, and `Gallery` renders

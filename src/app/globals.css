@@ -711,30 +711,13 @@ footer.site {
     0 30px 90px rgba(0, 0, 0, 0.85),
     0 0 70px rgba(196, 18, 48, 0.14);
   outline: none;
-  transform-origin: center;
-  will-change: transform, clip-path;
+  view-transition-name: project-dialog;
 }
-/* Scrolls inside .modal, so the ghost thumbnail below stays pinned to the box */
 .modal-scroll {
   position: relative;
   max-height: 84vh;
   overflow-y: auto;
   padding: 34px 38px 14px;
-}
-/* The clicked card's thumbnail, laid over the dialog while it grows/shrinks
-   (opacity is driven from ProjectModal.tsx) */
-.modal-ghost {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 2;
-}
-.modal-ghost:not([src]) {
-  display: none;
 }
 .modal-title {
   font-size: clamp(24px, 3vw, 36px);
@@ -742,6 +725,7 @@ footer.site {
 }
 .modal .player {
   margin-top: 20px;
+  view-transition-name: project-media;
 }
 .modal .detail-body {
   margin-top: 26px;
@@ -774,6 +758,86 @@ footer.site {
   .modal-close {
     top: 14px;
     right: 12px;
+  }
+}
+
+/* ---- card ⇄ dialog morph ----
+   Gallery.tsx opens/closes the dialog inside a view transition with the clicked
+   card named like the dialog: the thumbnail (project-media) flies between the
+   card and the player, the dialog panel (project-dialog) grows out of the card
+   behind it, and the rest of the page (root) cross-fades into the blurred view.
+   All of it runs on snapshots, so nothing is re-laid-out or re-blurred per frame. */
+:root[data-vt="open"]::view-transition-group(*),
+:root[data-vt="open"]::view-transition-old(*),
+:root[data-vt="open"]::view-transition-new(*) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+:root[data-vt="close"]::view-transition-group(*),
+:root[data-vt="close"]::view-transition-old(*),
+:root[data-vt="close"]::view-transition-new(*) {
+  animation-duration: 380ms;
+  animation-timing-function: cubic-bezier(0.3, 0, 0.1, 1);
+}
+::view-transition-old(project-media),
+::view-transition-new(project-media),
+::view-transition-old(project-dialog),
+::view-transition-new(project-dialog) {
+  width: 100%;
+  height: 100%;
+}
+/* The flying thumbnail is always the dialog's 16:9 poster, cover-fitted to the
+   morphing box: in the square card box that's exactly the card's own crop, so
+   there's no cross-fade between two differently cropped images. */
+::view-transition-old(project-media),
+::view-transition-new(project-media) {
+  object-fit: cover;
+}
+:root[data-vt="open"]::view-transition-old(project-media),
+:root[data-vt="close"]::view-transition-new(project-media),
+:root[data-vt="open"]::view-transition-old(project-dialog),
+:root[data-vt="close"]::view-transition-new(project-dialog) {
+  animation: none;
+  opacity: 0;
+}
+:root[data-vt="open"]::view-transition-new(project-media),
+:root[data-vt="close"]::view-transition-old(project-media) {
+  animation: none;
+  opacity: 1;
+}
+/* Snapshots don't capture the overlay's backdrop-filter (the blur would only pop
+   in once the transition ends), so during the transition the blur is applied to
+   the page snapshot instead and cross-fades in from the click. A static filter,
+   so only opacity animates. */
+:root[data-vt] .modal-overlay {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+:root[data-vt="open"]::view-transition-new(root),
+:root[data-vt="close"]::view-transition-old(root) {
+  filter: blur(12px);
+}
+/* The panel starts hidden under the thumbnail and fades in as it grows */
+:root[data-vt="open"]::view-transition-new(project-dialog) {
+  animation-name: vt-panel-in;
+}
+:root[data-vt="close"]::view-transition-old(project-dialog) {
+  animation-name: vt-panel-out;
+}
+@keyframes vt-panel-in {
+  from {
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+}
+@keyframes vt-panel-out {
+  50% {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
   }
 }
 
