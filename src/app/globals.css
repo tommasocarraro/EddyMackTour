@@ -131,6 +131,7 @@ button {
 }
 .brand .name {
   font-family: var(--font-brand);
+  text-transform: uppercase;
   font-size: 22px;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -175,11 +176,9 @@ nav.filters button:hover,
 nav.filters a:hover {
   color: var(--ink);
 }
-/* About is a page, not a filter: serif italic, no left-bar indicator */
+/* About is a page, not a filter: bold, no left-bar indicator */
 nav.filters-secondary a {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-style: italic;
-  font-size: 21px;
+  font-weight: 700;
   color: var(--ink);
   border-left: none;
   padding-left: 0;
@@ -187,8 +186,7 @@ nav.filters-secondary a {
 }
 nav.filters-secondary a::after {
   content: " \2192";
-  font-style: normal;
-  font-size: 0.8em;
+  font-size: 0.9em;
   display: inline-block;
   transition: transform 0.2s ease;
 }
@@ -281,6 +279,7 @@ nav.filters-secondary a.active {
 }
 .topbar-title {
   font-family: var(--font-brand);
+  text-transform: uppercase;
   font-size: 18px;
   white-space: nowrap;
 }
@@ -693,6 +692,84 @@ footer.site {
 }
 .next-project:hover .arrow {
   transform: translateX(4px);
+}
+
+/* ---- project dialog (intercepted /project/[slug]) ---- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4vh 0;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  animation: modal-fade 0.25s ease;
+}
+/* Viewport split in 5 columns: the dialog spans the middle 3 */
+.modal {
+  position: relative;
+  width: 60vw;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--paper);
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.85),
+    0 0 70px rgba(196, 18, 48, 0.14);
+  padding: 34px 38px 14px;
+  outline: none;
+  animation: modal-rise 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.modal-title {
+  font-size: clamp(24px, 3vw, 36px);
+  padding-right: 44px;
+}
+.modal .player {
+  margin-top: 20px;
+}
+.modal .detail-body {
+  margin-top: 26px;
+}
+.modal-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.modal-close:hover {
+  transform: rotate(90deg);
+}
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes modal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@media (max-width: 900px) {
+  .modal {
+    width: calc(100vw - 32px);
+    padding: 26px 20px 8px;
+  }
+  .modal-close {
+    top: 14px;
+    right: 12px;
+  }
 }
 
 /* ---- studio (admin) ---- */

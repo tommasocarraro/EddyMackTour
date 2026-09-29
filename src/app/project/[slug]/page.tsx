@@ -2,8 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
-import Thumbnail from "@/components/Thumbnail";
-import { getYoutubeEmbedUrl } from "@/lib/youtube";
+import ProjectDetail from "@/components/ProjectDetail";
 
 export const dynamic = "force-dynamic";
 
@@ -25,8 +24,6 @@ export default async function ProjectPage({ params }: { params: { slug: string }
   const idx = all.findIndex((p) => p.id === project.id);
   const next = all[(idx + 1) % all.length];
 
-  const embedUrl = getYoutubeEmbedUrl(project.youtubeUrl);
-
   return (
     <>
       <Sidebar categories={categories.map((c) => c.name)} />
@@ -38,44 +35,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
           <h2>{project.title}</h2>
         </div>
 
-        <div className="player">
-          {embedUrl ? (
-            <iframe
-              src={embedUrl}
-              title={project.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          ) : (
-            <Thumbnail src={project.thumbnail} alt={project.title} className="still" />
-          )}
-        </div>
-
-        <div className="detail-body">
-          <p>{project.description}</p>
-          <div className="credits">
-            <div>
-              <b>Category</b>
-              {project.categories.map((c) => c.name).join(" / ")}
-            </div>
-            {project.client && (
-              <div>
-                <b>Client</b>
-                {project.client}
-              </div>
-            )}
-            {project.role && (
-              <div>
-                <b>Role</b>
-                {project.role}
-              </div>
-            )}
-            <div>
-              <b>Year</b>
-              {project.year}
-            </div>
-          </div>
-        </div>
+        <ProjectDetail project={project} />
 
         {next && next.id !== project.id && (
           <Link className="next-project" href={`/project/${next.slug}`}>

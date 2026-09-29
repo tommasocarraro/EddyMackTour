@@ -16,7 +16,9 @@ feedback:
 - Square mosaic grid: 5 columns desktop, 3 columns mobile, separated by open gaps
   (no visible dividing line), no filler tiles on incomplete rows
 - Fonts: Fraunces (serif, display/titles) + Helvetica (system font stack, UI/body);
-  brand name "Eddy Mack Tour" in Futura (falls back to Jost where Futura isn't installed)
+  brand name "Eddy Mack Tour" in Futura (falls back to Jost where Futura isn't installed),
+  shown in all caps via CSS `text-transform`
+- Sidebar About link is bold, same font as the category filters
 - Categories are many-to-many: a project can belong to more than one
 - Black + crimson red palette (`src/app/globals.css` `:root` variables), logo mark in
   `public/logo/`, favicon files generated from it in `src/app/favicon.ico`/`icon.png`/
@@ -40,8 +42,15 @@ feedback:
 ## Routes
 
 - `/` — gallery, filterable by category (`?category=Name`)
-- `/project/[slug]` — detail page, embeds the YouTube video
-- `/about` — bio + portrait (`public/about/portrait-web.jpg`, a 1200×1800 web copy of the full-size original)
+- `/project/[slug]` — detail page, embeds the YouTube video. Clicking a card in the
+  gallery opens it instead as a centered dialog over the blurred gallery (middle 3 of
+  5 viewport columns; closes via the X, a click outside, or Escape — all `router.back()`).
+  This uses Next's intercepting + parallel routes: `src/app/@modal/(.)project/[slug]`
+  renders `src/components/ProjectModal.tsx`, and `@modal/default.tsx` +
+  `@modal/[...catchAll]` keep the slot empty elsewhere. A direct visit or refresh shows
+  the full page. Both share `src/components/ProjectDetail.tsx`; the dialog intentionally
+  has no "Next project" link or footer
+- `/about` — bio, portrait (`public/about/portrait-web.jpg`, a 1200×1800 web copy of the full-size original), and a plain "Contact: <email>" line
 - `/admin/login` — sign in
 - `/admin` — dashboard: add/edit/remove projects, add/remove categories (protected)
 

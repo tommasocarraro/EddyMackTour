@@ -31,8 +31,7 @@ export default async function AboutPage() {
               architecture.
             </p>
             <p className="about-contact">
-              Got a story worth telling? Let&apos;s talk —{" "}
-              <a href="mailto:edocarraro1998@gmail.com">edocarraro1998@gmail.com</a>.
+              Contact: <a href="mailto:edocarraro1998@gmail.com">edocarraro1998@gmail.com</a>
             </p>
           </div>
         </section>
