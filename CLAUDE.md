@@ -55,7 +55,10 @@ feedback:
   The dialog is opened client-side by `src/components/Gallery.tsx` from the project data
   the gallery already loaded (no server round trip, so the animation starts on click): the
   card's click calls `history.pushState` to `/project/[slug]`, and `Gallery` renders
-  `ProjectModal` when `usePathname()` matches. A direct visit or refresh shows the full page.
+  `ProjectModal` when `usePathname()` matches. The URL change (`pushState` on open,
+  `router.back()` on close) runs only after the morph finishes. Run mid-animation, it made
+  Next re-render during the transition, so on real phones the close often popped instead
+  of animating. A direct visit or refresh shows the full page.
   Both share `src/components/ProjectDetail.tsx`; the dialog intentionally has no "Next
   project" link or footer. The YouTube iframe (`src/components/YoutubePlayer.tsx`) only
   mounts once the open animation finishes (loading it mid-animation made it stutter), with

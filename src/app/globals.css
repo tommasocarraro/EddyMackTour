@@ -793,6 +793,11 @@ footer.site {
 ::view-transition-new(project-media) {
   object-fit: cover;
 }
+/* Without this the cover-fitted poster spills out of the square card box onto
+   the neighbouring tiles (seen on Android Chrome while it shrinks back). */
+::view-transition-group(project-media) {
+  overflow: clip;
+}
 :root[data-vt="open"]::view-transition-old(project-media),
 :root[data-vt="close"]::view-transition-new(project-media),
 :root[data-vt="open"]::view-transition-old(project-dialog),

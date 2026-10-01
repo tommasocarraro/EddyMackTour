@@ -60,6 +60,11 @@ export default function Gallery({ projects }: { projects: GalleryProject[] }) {
   const open = openSlug ? projects.find((p) => p.slug === openSlug) : undefined;
   const openSlugRef = useRef(openSlug);
   openSlugRef.current = openSlug;
+  // The URL change waits until the morph has finished: pushState/back make Next
+  // re-render the app (and back is an async history traversal), which landing
+  // mid-animation starved or cut it short on phones. wantSlugRef is what the
+  // URL should end up as, so an open interrupted by a close never gets pushed.
+  const wantSlugRef = useRef(openSlug);
 
   // Follow URL changes made outside the card/dialog (browser back/forward):
   // those switch instantly, without the morph. The card/dialog's own URL
@@ -67,11 +72,13 @@ export default function Gallery({ projects }: { projects: GalleryProject[] }) {
   useEffect(() => {
     const slug = slugFromPath(pathname);
     if (slug === openSlugRef.current) return;
+    wantSlugRef.current = slug;
     setOpenSlug(slug);
     setSettled(true);
   }, [pathname]);
 
   function openProject(slug: string) {
+    wantSlugRef.current = slug;
     const card = findCard(slug);
     nameCard(card, true);
     const vt = morph("open", () => {
@@ -80,25 +87,35 @@ export default function Gallery({ projects }: { projects: GalleryProject[] }) {
         setSettled(false);
         setOpenSlug(slug);
       });
-      // After the DOM swap, so Next's pathname update can't render the dialog
-      // before the browser has captured the "before" snapshot.
-      window.history.pushState(null, "", `/project/${slug}`);
     });
-    if (vt) vt.finished.finally(() => setSettled(true));
-    else setSettled(true);
+    const done = () => {
+      setSettled(true);
+      if (wantSlugRef.current !== slug) return;
+      // Opened while a close was still animating (its back() not run yet):
+      // take over that history entry instead of stacking a second one.
+      const nav = slugFromPath(window.location.pathname) ? "replaceState" : "pushState";
+      window.history[nav](null, "", `/project/${slug}`);
+    };
+    if (vt) vt.finished.finally(done);
+    else done();
   }
 
   function closeProject() {
     if (!openSlug) return;
+    wantSlugRef.current = null;
     const card = findCard(openSlug);
     // Snapshot the poster rather than a playing video.
     document.querySelector<HTMLElement>(".modal .player iframe")?.style.setProperty("visibility", "hidden");
     const vt = morph("close", () => {
       flushSync(() => setOpenSlug(null));
       nameCard(card, true);
-      router.back();
     });
-    vt?.finished.finally(() => nameCard(card, false));
+    const done = () => {
+      nameCard(card, false);
+      if (wantSlugRef.current === null && slugFromPath(window.location.pathname)) router.back();
+    };
+    if (vt) vt.finished.finally(done);
+    else done();
   }
 
   return (
