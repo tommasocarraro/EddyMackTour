@@ -30,7 +30,7 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
     <>
       <div className="mobile-topbar">
         <Link className="name" href="/">
-          <Image src="/logo/logo-mark-white.png" alt="" width={44} height={47} priority />
+          <Image src="/logo/logo-hand-white.png" alt="" width={48} height={48} priority />
           <span className="topbar-text">
             <span className="topbar-title">Eddy Mack Tour</span>
             <span className="topbar-role">
@@ -54,7 +54,7 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
         <div>
           <div className="brand">
             <Link href="/" onClick={close} className="brand-mark">
-              <Image src="/logo/logo-mark-white.png" alt="Eddy Mack Tour" width={56} height={60} priority />
+              <Image src="/logo/logo-hand-white.png" alt="Eddy Mack Tour" width={64} height={64} priority />
               <span className="brand-text">
                 <span className="name">Eddy Mack Tour</span>
                 <span className="role">

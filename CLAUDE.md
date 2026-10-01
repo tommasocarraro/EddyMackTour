@@ -16,15 +16,27 @@ feedback:
 - Square mosaic grid: 5 columns desktop, 3 columns mobile, separated by open gaps
   (no visible dividing line), no filler tiles on incomplete rows
 - Fonts: Fraunces (serif, display/titles) + Helvetica (system font stack, UI/body);
-  brand name "Eddy Mack Tour" in Futura (falls back to Jost where Futura isn't installed),
-  shown in all caps via CSS `text-transform`
+  the header's "Eddy Mack Tour" name (sidebar + mobile top bar) in Eurostile (`--font-header`;
+  a paid font, so it falls back to the Saira lookalike where it isn't installed), shown in
+  all caps via CSS `text-transform`; other brand touches (e.g. the intro button) use Futura
+  (`--font-brand`, falls back to Jost)
 - Sidebar About link is bold, same font as the category filters (no arrow)
 - Categories are many-to-many: a project can belong to more than one
-- Black + crimson red palette (`src/app/globals.css` `:root` variables), logo mark in
-  `public/logo/`, favicon files generated from it in `src/app/favicon.ico`/`icon.png`/
-  `apple-icon.png`
-- A short looping/rotating logo intro plays fullscreen on every page load
-  (`src/components/IntroLoader.tsx`), dissolving into the site after ~1.5s
+- Black + crimson red palette (`src/app/globals.css` `:root` variables), hand-drawn logo
+  (source: gitignored `public/intro/intro-logo-original.png`, black on transparent).
+  Site mark is a white copy in `public/logo/logo-hand-white.png` (the sidebar and the
+  thumbnail fallback use it); the favicons `src/app/favicon.ico`/`icon.png`/`apple-icon.png`
+  are the black logo on a white square
+- A fullscreen showreel intro (`src/components/IntroLoader.tsx`) loops, with the hand-drawn logo
+  (`public/intro/intro-logo-white.png`, a white cropped copy of the gitignored black
+  `intro-logo-original.png`) above an outlined Futura "Cut to the work" button, until the
+  visitor presses it, then dissolves into the site. It shows once per
+  browser session (`sessionStorage`) and never on `/admin`. An inline script in
+  `layout.tsx` hides it before first paint for repeat views. It fills landscape
+  screens; on portrait ones the whole 16:9 frame is fitted (the reel has wide titles).
+  Files in `public/intro/`: `intro-1080.webm`/`.mp4`, `intro-720.mp4` (phones),
+  `intro-poster.jpg` (first frame). They're encoded from `intro-original.mp4`, which is
+  gitignored (H.264 CRF 26 / VP9 CRF 36, audio stripped, `+faststart`)
 
 ## Stack
 

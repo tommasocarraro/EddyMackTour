@@ -1,6 +1,6 @@
 "use client";
 
-const FALLBACK = "/logo/logo-mark-white.png";
+const FALLBACK = "/logo/logo-hand-white.png";
 
 function fallBack(img: HTMLImageElement) {
   if (img.src.endsWith(FALLBACK)) return;

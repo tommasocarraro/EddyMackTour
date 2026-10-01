@@ -9,3 +9,7 @@ public/logo/*.mov
 tsconfig.tsbuildinfo
 # Full-size portrait original; the site serves portrait-web.jpg
 public/about/portrait.jpeg
+# Full-size intro video original; the site serves the compressed public/intro/intro-*
+public/intro/intro-original.mp4
+# Black full-size logo original; the intro serves the white web copy intro-logo-white.png
+public/intro/intro-logo-original.png

@@ -14,6 +14,8 @@
   --danger: #a4503a;
   --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-brand: Futura, "Futura PT", var(--font-jost), sans-serif;
+  /* Header "Eddy Mack Tour" name: Eurostile where installed, Saira lookalike otherwise */
+  --font-header: Eurostile, "Eurostile LT Std", "Eurostile Next LT Pro", var(--font-saira), sans-serif;
 }
 
 * {
@@ -75,15 +77,111 @@ button {
   inset: 0;
   z-index: 999;
   background: var(--paper);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   opacity: 1;
   transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.intro-loader__video {
-  width: 70vw;
+:root[data-intro-seen] .intro-loader {
+  display: none;
+}
+/* Fills landscape screens; on portrait ones the whole 16:9 frame is fitted
+   across the width instead, since the reel's wide titles would be cropped. */
+.intro-loader__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (max-aspect-ratio: 1/1) {
+  .intro-loader__media {
+    object-fit: contain;
+  }
+}
+.intro-loader__cta {
+  position: absolute;
+  left: 50%;
+  bottom: max(48px, calc(env(safe-area-inset-bottom) + 32px));
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+.intro-loader__logo {
+  width: clamp(110px, 12vw, 170px);
   height: auto;
+  filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.7));
+}
+/* Outlined glass button: crimson fills in from the left and the arrow stretches
+   on hover. Touch screens never hover, so the resting state stands on its own. */
+.intro-loader__enter {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-brand);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fdfbf5;
+  background: rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--accent);
+  /* Extra left padding balances the trailing letter-spacing and the arrow */
+  padding: 16px 26px 16px 36px;
+  cursor: pointer;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.6),
+    0 0 28px rgba(225, 29, 63, 0.25);
+  transition: box-shadow 0.45s ease;
+}
+.intro-loader__enter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.intro-loader__arrow {
+  position: relative;
+  width: 22px;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.45s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.intro-loader__arrow::after {
+  content: "";
+  position: absolute;
+  /* A 7px corner turned 45°: its tip lands 1.5px right of the box, on the line */
+  right: 1.5px;
+  top: calc(50% - 3.5px);
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+.intro-loader__enter:hover {
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(225, 29, 63, 0.5);
+}
+.intro-loader__enter:hover::before {
+  transform: scaleX(1);
+}
+.intro-loader__enter:hover .intro-loader__arrow {
+  width: 34px;
+}
+.intro-loader__enter:focus-visible {
+  outline-color: #fdfbf5;
 }
 .intro-loader--out {
   opacity: 0;
@@ -130,7 +228,7 @@ button {
   gap: 3px;
 }
 .brand .name {
-  font-family: var(--font-brand);
+  font-family: var(--font-header);
   text-transform: uppercase;
   font-size: 22px;
   letter-spacing: 0.01em;
@@ -268,7 +366,7 @@ nav.filters-secondary a.active {
   gap: 2px;
 }
 .topbar-title {
-  font-family: var(--font-brand);
+  font-family: var(--font-header);
   text-transform: uppercase;
   font-size: 18px;
   white-space: nowrap;
