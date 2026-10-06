@@ -26,7 +26,7 @@ const unbounded = Unbounded({
 
 export const metadata: Metadata = {
   title: "Eddy Mack Tour — Portfolio",
-  description: "Director & Filmmaker based in Venice.",
+  description: "Director & Filmmaker based in Italy.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -36,7 +36,7 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
             <span className="topbar-role">
               Director &amp; Filmmaker
               <br />
-              based in Venice
+              based in Italy
             </span>
           </span>
         </Link>
@@ -60,7 +60,7 @@ export default function Sidebar({ categories, activeCategory, studioMode }: Prop
                 <span className="role">
                   Director &amp; Filmmaker
                   <br />
-                  based in Venice
+                  based in Italy
                 </span>
               </span>
             </Link>
