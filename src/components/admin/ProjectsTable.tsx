@@ -130,7 +130,7 @@ function EditProjectForm({
     };
   }, [thumbnailFilePreview]);
 
-  async function onYoutubeUrlBlur(e: React.FocusEvent<HTMLInputElement>) {
+  async function onVideoUrlBlur(e: React.FocusEvent<HTMLInputElement>) {
     const url = e.target.value.trim();
     if (!url) return;
     const titleEmpty = !titleRef.current?.value.trim();
@@ -138,7 +138,7 @@ function EditProjectForm({
 
     setFetchingMeta(true);
     try {
-      const res = await fetch(`/api/youtube-metadata?url=${encodeURIComponent(url)}`);
+      const res = await fetch(`/api/video-metadata?url=${encodeURIComponent(url)}`);
       if (res.ok) {
         const data = await res.json();
         if (titleEmpty && titleRef.current && data.title) titleRef.current.value = data.title;
@@ -202,15 +202,15 @@ function EditProjectForm({
         />
       </div>
       <div className="field">
-        <label htmlFor={`ep-link-${project.id}`}>YouTube link</label>
+        <label htmlFor={`ep-link-${project.id}`}>Video link (YouTube or Vimeo)</label>
         <input
           id={`ep-link-${project.id}`}
           name="youtubeUrl"
           defaultValue={project.youtubeUrl}
           required
-          onBlur={onYoutubeUrlBlur}
+          onBlur={onVideoUrlBlur}
         />
-        {fetchingMeta && <span className="sub">Fetching details from YouTube…</span>}
+        {fetchingMeta && <span className="sub">Fetching details from the video…</span>}
       </div>
       <div className="field">
         <label htmlFor={`ep-client-${project.id}`}>Client</label>
@@ -226,7 +226,7 @@ function EditProjectForm({
       </div>
       <div className="field">
         <label htmlFor={`ep-thumb-${project.id}`}>
-          Thumbnail (replace by uploading a file — otherwise it stays in sync with the YouTube link)
+          Thumbnail (replace by uploading a file — otherwise it stays in sync with the video link)
         </label>
         {(thumbnailFilePreview ?? thumbnailUrl) && (
           <Thumbnail

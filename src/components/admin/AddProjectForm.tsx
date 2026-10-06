@@ -49,18 +49,19 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
     setFetchingMeta(true);
     setMetaError(null);
     try {
-      const res = await fetch(`/api/youtube-metadata?url=${encodeURIComponent(url)}`);
+      const res = await fetch(`/api/video-metadata?url=${encodeURIComponent(url)}`);
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setMetaError(data.error ?? "That doesn't look like a YouTube link — check it and try again.");
+        setMetaError(data.error ?? "That doesn't look like a YouTube or Vimeo link — check it and try again.");
         return;
       }
+      if (data.url) setYoutubeUrl(data.url);
       setTitle(data.title ?? "");
       setDescription(data.description ?? "");
       setThumbnailUrl(data.thumbnail ?? null);
       setStep("details");
     } catch {
-      setMetaError("Couldn't reach YouTube — check your connection and try again.");
+      setMetaError("Couldn't look up that video — check your connection and try again.");
     } finally {
       setFetchingMeta(false);
     }
@@ -102,17 +103,17 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
       <form className="cat-panel" onSubmit={onContinue}>
         <h3>New project</h3>
         <div className="field">
-          <label htmlFor="np-link">YouTube link</label>
+          <label htmlFor="np-link">Video link (YouTube or Vimeo)</label>
           <input
             id="np-link"
             value={youtubeUrl}
             onChange={(e) => setYoutubeUrl(e.target.value)}
-            placeholder="https://youtube.com/watch?v=..."
+            placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..."
             required
             autoFocus
           />
           <span className="sub">
-            We&apos;ll pull the title, description and thumbnail from YouTube — you can edit
+            We&apos;ll pull the title, description and thumbnail from the video — you can edit
             everything before saving.
           </span>
         </div>
@@ -141,7 +142,7 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
       <h3>New project</h3>
       <input type="hidden" name="youtubeUrl" value={youtubeUrl} readOnly />
       <div className="field">
-        <label>YouTube link</label>
+        <label>Video link</label>
         <div className="row-title">
           <span className="sub">{youtubeUrl}</span>
           <button className="btn ghost" type="button" onClick={() => setStep("url")}>
@@ -184,7 +185,7 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
         <input id="np-year" name="year" type="number" defaultValue={new Date().getFullYear()} required />
       </div>
       <div className="field">
-        <label htmlFor="np-thumb">Thumbnail (pulled from YouTube — upload a file to replace it)</label>
+        <label htmlFor="np-thumb">Thumbnail (pulled from the video — upload a file to replace it)</label>
         {(thumbnailFilePreview ?? thumbnailUrl) && (
           <Thumbnail
             src={thumbnailFilePreview ?? thumbnailUrl ?? ""}

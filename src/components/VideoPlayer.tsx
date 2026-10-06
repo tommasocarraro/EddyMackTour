@@ -3,13 +3,13 @@
 import { createContext, useContext, useState } from "react";
 import Thumbnail from "@/components/Thumbnail";
 
-// False while the project dialog is still animating open. Loading YouTube's
-// player mid-animation makes the grow-out-of-the-card effect stutter, so the
+// False while the project dialog is still animating open. Loading the
+// YouTube/Vimeo player mid-animation makes the grow-out-of-the-card effect stutter, so the
 // iframe is only mounted once this flips to true. Outside the dialog (the full
 // project page) there's no provider and it defaults to true.
 export const PlayerReadyContext = createContext(true);
 
-export default function YoutubePlayer({ embedUrl, title, poster }: { embedUrl: string; title: string; poster: string }) {
+export default function VideoPlayer({ embedUrl, title, poster }: { embedUrl: string; title: string; poster: string }) {
   const ready = useContext(PlayerReadyContext);
   const [loaded, setLoaded] = useState(false);
 

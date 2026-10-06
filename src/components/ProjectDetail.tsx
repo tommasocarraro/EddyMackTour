@@ -1,7 +1,7 @@
 import type { Category, Project } from "@prisma/client";
 import Thumbnail from "@/components/Thumbnail";
-import YoutubePlayer from "@/components/YoutubePlayer";
-import { getYoutubeEmbedUrl } from "@/lib/youtube";
+import VideoPlayer from "@/components/VideoPlayer";
+import { getVideoEmbedUrl } from "@/lib/video";
 
 // Just the fields the detail view shows, so the gallery can hand them to the
 // client-side dialog without serializing whole Prisma rows (Dates etc.).
@@ -11,13 +11,13 @@ export type ProjectDetailData = Pick<
 > & { categories: Pick<Category, "name">[] };
 
 export default function ProjectDetail({ project }: { project: ProjectDetailData }) {
-  const embedUrl = getYoutubeEmbedUrl(project.youtubeUrl);
+  const embedUrl = getVideoEmbedUrl(project.youtubeUrl);
 
   return (
     <>
       <div className="player">
         {embedUrl ? (
-          <YoutubePlayer embedUrl={embedUrl} title={project.title} poster={project.thumbnail} />
+          <VideoPlayer embedUrl={embedUrl} title={project.title} poster={project.thumbnail} />
         ) : (
           <Thumbnail src={project.thumbnail} alt={project.title} className="still" />
         )}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef } from "react";
-import { PlayerReadyContext } from "@/components/YoutubePlayer";
+import { PlayerReadyContext } from "@/components/VideoPlayer";
 
 // The dialog itself is static; opening and closing are animated by Gallery as a
 // view transition that morphs the clicked card into it (see globals.css).

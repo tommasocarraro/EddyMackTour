@@ -55,7 +55,7 @@ export default function Gallery({ projects }: { projects: GalleryProject[] }) {
   const pathname = usePathname();
   const router = useRouter();
   const [openSlug, setOpenSlug] = useState(() => slugFromPath(pathname));
-  // False while the dialog is still morphing open; the YouTube player waits for it.
+  // False while the dialog is still morphing open; the video player waits for it.
   const [settled, setSettled] = useState(true);
   const open = openSlug ? projects.find((p) => p.slug === openSlug) : undefined;
   const openSlugRef = useRef(openSlug);

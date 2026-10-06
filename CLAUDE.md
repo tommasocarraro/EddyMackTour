@@ -1,6 +1,6 @@
 # Eddy Mack Tour — video portfolio
 
-Portfolio website for a videomaker (creations hosted on YouTube). Public gallery +
+Portfolio website for a videomaker (creations hosted on YouTube or Vimeo). Public gallery +
 project detail pages, plus a password-protected "Studio" area where he can add/edit
 projects, upload thumbnails, and manage categories.
 
@@ -58,7 +58,7 @@ feedback:
 ## Routes
 
 - `/` — gallery, filterable by category (`?category=Name`)
-- `/project/[slug]` — detail page, embeds the YouTube video. Clicking a card in the
+- `/project/[slug]` — detail page, embeds the YouTube or Vimeo video. Clicking a card in the
   gallery opens it instead as a centered dialog over the blurred gallery (~44vw wide,
   kept narrow so the blur shows around it; closes via the X, a click outside, or Escape — all `router.back()`).
   The dialog grows out of the clicked card and shrinks back into it on close. This is a
@@ -76,7 +76,7 @@ feedback:
   Next re-render during the transition, so on real phones the close often popped instead
   of animating. A direct visit or refresh shows the full page.
   Both share `src/components/ProjectDetail.tsx`; the dialog intentionally has no "Next
-  project" link or footer. The YouTube iframe (`src/components/YoutubePlayer.tsx`) only
+  project" link or footer. The player iframe (`src/components/VideoPlayer.tsx`) only
   mounts once the open animation finishes (loading it mid-animation made it stutter), with
   the thumbnail shown in its place until the player has loaded
 - `/about` — bio, portrait (`public/about/portrait-web.jpg`, a 1200×1800 web copy of the full-size original), and a bold "Contact: <email>" line
@@ -116,16 +116,26 @@ Also set `SESSION_SECRET` to a long random string (e.g. `openssl rand -hex 32`).
 `.env` needs `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` —
 free account at cloudinary.com, values are on its dashboard.
 
-### YouTube title/description autofill (optional)
+### Video links: YouTube and Vimeo
 
-When adding or editing a project, the Studio form calls the YouTube Data API v3
-(`src/lib/youtube.ts` `getYoutubeMetadata`, via `src/app/api/youtube-metadata/route.ts`)
-on blur of the YouTube link field to pre-fill empty title/description fields — it
-never overwrites text already typed in. Set `YOUTUBE_API_KEY` in `.env` (enable
-"YouTube Data API v3" on a Google Cloud project, then create an API key) to turn
-this on; without it, autofill silently no-ops and the admin fills those fields in
-by hand. This is separate from thumbnail autofill (`getYoutubeThumbnail`), which
-builds a static `img.youtube.com` URL and needs no key.
+A project's video link can be a YouTube or a Vimeo one. It's stored in
+`Project.youtubeUrl` (the column predates Vimeo support and wasn't renamed, to avoid a
+migration). `src/lib/video.ts` picks the provider and is what the rest of the code
+calls; `src/lib/youtube.ts` and `src/lib/vimeo.ts` hold the provider specifics.
+
+In the Studio, `src/app/api/video-metadata/route.ts` looks up the title, description
+and thumbnail for a link: when adding a project, and on blur of the link field when
+editing (where it never overwrites text already typed in).
+
+- YouTube: the thumbnail is a static `img.youtube.com` URL and needs no key.
+  Title/description come from the YouTube Data API v3 and need `YOUTUBE_API_KEY` in
+  `.env` (enable "YouTube Data API v3" on a Google Cloud project, then create an API
+  key); without it they're left empty for the admin to fill in by hand.
+- Vimeo: all three come from Vimeo's public oEmbed endpoint, no key. Private or
+  domain-restricted videos aren't described by it, so those need a title and an
+  uploaded thumbnail by hand. Links are saved in canonical form (`vimeo.com/<id>`,
+  or `vimeo.com/<id>/<hash>` for unlisted videos, whose hash the player needs),
+  dropping the long `?turnstile=...` param Vimeo adds to copied links.
 
 ## Adding a collaborator logo
 

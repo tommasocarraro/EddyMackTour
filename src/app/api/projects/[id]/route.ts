@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAuthenticated } from "@/lib/auth";
 import { saveThumbnail, isUploadedFile } from "@/lib/uploads";
-import { getYoutubeThumbnail } from "@/lib/youtube";
+import { getVideoThumbnail, normalizeVideoUrl } from "@/lib/video";
 
 export async function PATCH(
   request: NextRequest,
@@ -15,7 +15,8 @@ export async function PATCH(
   const form = await request.formData();
   const title = form.get("title");
   const description = form.get("description");
-  const youtubeUrl = form.get("youtubeUrl");
+  const rawYoutubeUrl = form.get("youtubeUrl");
+  const youtubeUrl = rawYoutubeUrl ? normalizeVideoUrl(String(rawYoutubeUrl).trim()) : null;
   const client = form.get("client");
   const role = form.get("role");
   const year = form.get("year");
@@ -30,14 +31,14 @@ export async function PATCH(
   const data: Record<string, unknown> = {};
   if (title) data.title = String(title).trim();
   if (description) data.description = String(description).trim();
-  if (youtubeUrl) data.youtubeUrl = String(youtubeUrl).trim();
+  if (youtubeUrl) data.youtubeUrl = youtubeUrl;
   if (client !== null) data.client = String(client).trim() || null;
   if (role !== null) data.role = String(role).trim() || null;
   if (year) data.year = Number(year);
   if (isUploadedFile(thumbnailFile) && thumbnailFile.size > 0) {
     data.thumbnail = await saveThumbnail(thumbnailFile);
-  } else if (youtubeUrl && String(youtubeUrl).trim() !== current.youtubeUrl) {
-    const autoThumbnail = getYoutubeThumbnail(String(youtubeUrl).trim());
+  } else if (youtubeUrl && youtubeUrl !== current.youtubeUrl) {
+    const autoThumbnail = await getVideoThumbnail(youtubeUrl);
     if (autoThumbnail) data.thumbnail = autoThumbnail;
   }
   if (categoryNames.length > 0) {

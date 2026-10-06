@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { isAuthenticated } from "@/lib/auth";
 import { slugify } from "@/lib/slugify";
 import { saveThumbnail, isUploadedFile } from "@/lib/uploads";
-import { getYoutubeThumbnail } from "@/lib/youtube";
+import { getVideoThumbnail, normalizeVideoUrl } from "@/lib/video";
 
 export async function GET(request: NextRequest) {
   const category = request.nextUrl.searchParams.get("category");
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   const form = await request.formData();
   const title = String(form.get("title") ?? "").trim();
   const description = String(form.get("description") ?? "").trim();
-  const youtubeUrl = String(form.get("youtubeUrl") ?? "").trim();
+  const youtubeUrl = normalizeVideoUrl(String(form.get("youtubeUrl") ?? "").trim());
   const client = String(form.get("client") ?? "").trim() || null;
   const role = String(form.get("role") ?? "").trim() || null;
   const year = Number(form.get("year"));
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
   if (!title || !description || !youtubeUrl || !year || categoryNames.length === 0) {
     return NextResponse.json(
-      { error: "Title, description, YouTube link, year and at least one category are required." },
+      { error: "Title, description, video link, year and at least one category are required." },
       { status: 400 }
     );
   }
@@ -42,11 +42,11 @@ export async function POST(request: NextRequest) {
   if (isUploadedFile(thumbnailFile) && thumbnailFile.size > 0) {
     thumbnail = await saveThumbnail(thumbnailFile);
   } else {
-    thumbnail = getYoutubeThumbnail(youtubeUrl);
+    thumbnail = await getVideoThumbnail(youtubeUrl);
   }
   if (!thumbnail) {
     return NextResponse.json(
-      { error: "Couldn't get a thumbnail from that YouTube link — upload one manually." },
+      { error: "Couldn't get a thumbnail from that video link — upload one manually." },
       { status: 400 }
     );
   }
