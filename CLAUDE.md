@@ -16,10 +16,10 @@ feedback:
 - Square mosaic grid: 5 columns desktop, 3 columns mobile, separated by open gaps
   (no visible dividing line), no filler tiles on incomplete rows
 - Fonts: Fraunces (serif, display/titles) + Helvetica (system font stack, UI/body);
-  the header's "Eddy Mack Tour" name (sidebar + mobile top bar) in Eurostile Extended (`--font-header`;
-  a paid font, so it falls back to the Michroma lookalike where it isn't installed), shown in
-  all caps via CSS `text-transform` and sized small (15px sidebar, 14px top bar) because the
-  extended cut is wide and has to fit beside the logo; other brand touches (e.g. the intro button) use Futura
+  the header's "Eddy Mack Tour" name (sidebar + mobile top bar) in bold Akira Expanded (`--font-header`;
+  it needs a paid licence, so it falls back to the Unbounded lookalike where it isn't installed), shown in
+  all caps via CSS `text-transform` and sized small (15px sidebar, 13px top bar) because
+  Akira is very wide and has to fit beside the logo; other brand touches (e.g. the intro button) use Futura
   (`--font-brand`, falls back to Jost)
 - Sidebar About link is bold, same font as the category filters (no arrow)
 - Categories are many-to-many: a project can belong to more than one

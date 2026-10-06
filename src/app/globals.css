@@ -14,9 +14,8 @@
   --danger: #a4503a;
   --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-brand: Futura, "Futura PT", var(--font-jost), sans-serif;
-  /* Header "Eddy Mack Tour" name: Eurostile Extended where installed, Michroma lookalike otherwise */
-  --font-header: "Eurostile Extended", "Eurostile Extended #2", "Eurostile LT Std Ext Two", "Eurostile Next LT Pro Extended",
-    "Microgramma D Extended", var(--font-michroma), sans-serif;
+  /* Header "Eddy Mack Tour" name: Akira Expanded where installed, Unbounded lookalike otherwise */
+  --font-header: "Akira Expanded", Akira, var(--font-unbounded), sans-serif;
 }
 
 * {
@@ -179,6 +178,16 @@ button {
 .intro-loader__enter:focus-visible {
   outline-color: #fdfbf5;
 }
+@media (max-width: 900px) {
+  .intro-loader__enter {
+    gap: 10px;
+    font-size: 8px;
+    padding: 9px 14px 9px 20px;
+  }
+  .intro-loader__arrow {
+    width: 13px;
+  }
+}
 .intro-loader--out {
   opacity: 0;
   transform: scale(1.35);
@@ -226,7 +235,7 @@ button {
 .brand .name {
   font-family: var(--font-header);
   text-transform: uppercase;
-  /* The extended cut is wide: sized so the name fits beside the logo */
+  /* Akira is very wide: sized so the name fits beside the logo */
   font-size: 15px;
   font-weight: 700;
   white-space: nowrap;
@@ -365,7 +374,7 @@ nav.filters-secondary a.active {
 .topbar-title {
   font-family: var(--font-header);
   text-transform: uppercase;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
 }

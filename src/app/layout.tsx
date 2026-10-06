@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Jost, Michroma } from "next/font/google";
+import { Fraunces, Jost, Unbounded } from "next/font/google";
 import "./globals.css";
 import IntroLoader, { introSeenScript } from "@/components/IntroLoader";
 
@@ -17,11 +17,11 @@ const jost = Jost({
   weight: ["400", "500"],
 });
 
-// Free Eurostile Extended lookalike for the header name (Eurostile itself is a paid font)
-const michroma = Michroma({
+// Free Akira Expanded lookalike for the header name (Akira itself needs a paid licence)
+const unbounded = Unbounded({
   subsets: ["latin"],
-  variable: "--font-michroma",
-  weight: "400",
+  variable: "--font-unbounded",
+  weight: "700",
 });
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // suppressHydrationWarning: introSeenScript may add data-intro-seen before hydration
-    <html lang="en" className={`${fraunces.variable} ${jost.variable} ${michroma.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${fraunces.variable} ${jost.variable} ${unbounded.variable}`} suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: introSeenScript }} />
         <IntroLoader />
