@@ -14,8 +14,9 @@
   --danger: #a4503a;
   --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-brand: Futura, "Futura PT", var(--font-jost), sans-serif;
-  /* Header "Eddy Mack Tour" name: Eurostile where installed, Saira lookalike otherwise */
-  --font-header: Eurostile, "Eurostile LT Std", "Eurostile Next LT Pro", var(--font-saira), sans-serif;
+  /* Header "Eddy Mack Tour" name: Eurostile Extended where installed, Michroma lookalike otherwise */
+  --font-header: "Eurostile Extended", "Eurostile Extended #2", "Eurostile LT Std Ext Two", "Eurostile Next LT Pro Extended",
+    "Microgramma D Extended", var(--font-michroma), sans-serif;
 }
 
 * {
@@ -95,8 +96,8 @@ button {
 .intro-loader__cta {
   position: absolute;
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  bottom: max(48px, calc(env(safe-area-inset-bottom) + 32px));
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -225,8 +226,9 @@ button {
 .brand .name {
   font-family: var(--font-header);
   text-transform: uppercase;
-  font-size: 22px;
-  letter-spacing: 0.01em;
+  /* The extended cut is wide: sized so the name fits beside the logo */
+  font-size: 15px;
+  font-weight: 700;
   white-space: nowrap;
 }
 .brand .role {
@@ -363,7 +365,8 @@ nav.filters-secondary a.active {
 .topbar-title {
   font-family: var(--font-header);
   text-transform: uppercase;
-  font-size: 18px;
+  font-size: 14px;
+  font-weight: 700;
   white-space: nowrap;
 }
 .topbar-role {
