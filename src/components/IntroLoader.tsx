@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 
 const SEEN_KEY = "intro-seen";
+// Portrait screens get the vertical cut of the reel (and its poster).
+const PORTRAIT = "(max-aspect-ratio: 1/1)";
 
 // Runs inline in <body> before the page paints (see layout.tsx): once the intro
 // has been dismissed in this browser session, or on Studio pages, it's hidden
@@ -42,10 +44,14 @@ export default function IntroLoader() {
       aria-modal="true"
       aria-label="Eddy Mack Tour showreel"
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className="intro-loader__media" src="/intro/intro-poster.jpg" alt="" />
+      <picture>
+        <source srcSet="/intro/intro-mobile-poster.jpg" media={PORTRAIT} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="intro-loader__media" src="/intro/intro-poster.jpg" alt="" />
+      </picture>
       {playVideo && (
-        <video className="intro-loader__media" autoPlay muted loop playsInline poster="/intro/intro-poster.jpg">
+        <video className="intro-loader__media" autoPlay muted loop playsInline>
+          <source src="/intro/intro-mobile-720.mp4" type="video/mp4" media={PORTRAIT} />
           <source src="/intro/intro-720.mp4" type="video/mp4" media="(max-width: 800px)" />
           <source src="/intro/intro-1080.webm" type="video/webm" />
           <source src="/intro/intro-1080.mp4" type="video/mp4" />

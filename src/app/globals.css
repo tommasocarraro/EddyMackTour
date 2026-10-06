@@ -83,19 +83,14 @@ button {
 :root[data-intro-seen] .intro-loader {
   display: none;
 }
-/* Fills landscape screens; on portrait ones the whole 16:9 frame is fitted
-   across the width instead, since the reel's wide titles would be cropped. */
+/* Fills the screen: IntroLoader serves the 16:9 reel on landscape screens and
+   its vertical cut on portrait ones. */
 .intro-loader__media {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-@media (max-aspect-ratio: 1/1) {
-  .intro-loader__media {
-    object-fit: contain;
-  }
 }
 .intro-loader__cta {
   position: absolute;

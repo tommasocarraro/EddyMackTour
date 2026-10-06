@@ -32,11 +32,15 @@ feedback:
   `intro-logo-original.png`) above an outlined Futura "Cut to the work" button, until the
   visitor presses it, then dissolves into the site. It shows once per
   browser session (`sessionStorage`) and never on `/admin`. An inline script in
-  `layout.tsx` hides it before first paint for repeat views. It fills landscape
-  screens; on portrait ones the whole 16:9 frame is fitted (the reel has wide titles).
-  Files in `public/intro/`: `intro-1080.webm`/`.mp4`, `intro-720.mp4` (phones),
-  `intro-poster.jpg` (first frame). They're encoded from `intro-original.mp4`, which is
-  gitignored (H.264 CRF 26 / VP9 CRF 36, audio stripped, `+faststart`)
+  `layout.tsx` hides it before first paint for repeat views. It fills the
+  screen: landscape screens get the 16:9 reel, portrait ones a separate vertical (9:16) cut,
+  picked by a `(max-aspect-ratio: 1/1)` media query on the `<source>`/poster.
+  Files in `public/intro/`: `intro-1080.webm`/`.mp4`, `intro-720.mp4` (small landscape
+  screens), `intro-mobile-720.mp4` (vertical cut, 720×1280), `intro-poster.jpg` and
+  `intro-mobile-poster.jpg` (first frames). They're encoded from the gitignored originals
+  `website V4.mp4` (16:9) and `website mobile V4.mp4` (vertical): H.264 CRF 26 `-preset slow` /
+  VP9 CRF 36, audio stripped, `+faststart`. The machine has no system ffmpeg; `npm install
+  ffmpeg-static` in a temp dir provides one
 
 ## Stack
 
