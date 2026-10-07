@@ -35,8 +35,10 @@ export default function LoginPage() {
 
   return (
     <div className="main" style={{ marginLeft: 0 }}>
-      <div className="studio-shell">
+      <div className="studio-shell login">
         <form className="studio-card" onSubmit={onSubmit}>
+          <img className="studio-card-logo" src="/logo/logo-hand-white.png" alt="" />
+          <span className="eyebrow">Eddy Mack Tour</span>
           <h2>Studio</h2>
           <div className="sub">Sign in to manage the reel.</div>
           <div className="field">

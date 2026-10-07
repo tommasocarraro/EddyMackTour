@@ -6,12 +6,12 @@ import { titleFromFileName, useVideoUpload, VideoUploadStatus } from "@/componen
 
 type Props = {
   categories: string[];
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
   onCreated: () => void;
+  onCancel: () => void;
+  onUnsavedUploadChange: (unsaved: boolean) => void;
 };
 
-export default function AddProjectForm({ categories, open, onOpenChange, onCreated }: Props) {
+export default function AddProjectForm({ categories, onCreated, onCancel, onUnsavedUploadChange }: Props) {
   const [step, setStep] = useState<"url" | "details">("url");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [title, setTitle] = useState("");
@@ -24,7 +24,10 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
   const [saving, setSaving] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const upload = useVideoUpload();
-  const uploading = upload.state.status !== "idle";
+  const uploadStatus = upload.state.status;
+  const uploading = uploadStatus !== "idle";
+  // An uploaded file has to be fully sent before the project can be saved.
+  const canSave = !uploading || uploadStatus === "done";
 
   useEffect(() => {
     return () => {
@@ -32,18 +35,9 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
     };
   }, [thumbnailFilePreview]);
 
-  function reset() {
-    upload.discard();
-    setStep("url");
-    setYoutubeUrl("");
-    setTitle("");
-    setDescription("");
-    setThumbnailUrl(null);
-    if (thumbnailFilePreview) URL.revokeObjectURL(thumbnailFilePreview);
-    setThumbnailFilePreview(null);
-    setMetaError(null);
-    setError(null);
-  }
+  useEffect(() => {
+    onUnsavedUploadChange(uploadStatus === "uploading" || uploadStatus === "done");
+  }, [uploadStatus, onUnsavedUploadChange]);
 
   async function onContinue(e: React.FormEvent) {
     e.preventDefault();
@@ -117,59 +111,51 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
       return;
     }
 
-    formRef.current.reset();
     upload.commit();
-    reset();
-    onOpenChange(false);
     onCreated();
   }
 
-  // An uploaded file has to be fully sent before the project can be saved.
-  const canSave = !uploading || upload.state.status === "done";
-
-  if (!open) return null;
-
   if (step === "url") {
     return (
-      <form className="cat-panel" onSubmit={onContinue}>
-        <h3>New project</h3>
+      <form className="studio-form" onSubmit={onContinue}>
+        <div className="steps">
+          <span className="is-current">1 · Video</span>
+          <span>2 · Details</span>
+        </div>
+
         <div className="field">
-          <label htmlFor="np-link">Video link (YouTube or Vimeo)</label>
+          <label htmlFor="np-file">Upload a video file</label>
+          <input id="np-file" className="file-input drop" type="file" accept="video/*" onChange={onVideoFileChange} />
+          <span className="hint">
+            Uploaded files aren&apos;t published anywhere else — they only play on this website.
+          </span>
+        </div>
+        <VideoUploadStatus state={upload.state} />
+
+        <div className="or-divider">or</div>
+
+        <div className="field">
+          <label htmlFor="np-link">Paste a YouTube or Vimeo link</label>
           <input
             id="np-link"
             value={youtubeUrl}
             onChange={(e) => setYoutubeUrl(e.target.value)}
             placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..."
             required
-            autoFocus
           />
-          <span className="sub">
-            We&apos;ll pull the title, description and thumbnail from the video — you can edit
-            everything before saving.
-          </span>
-        </div>
-        <div className="field">
-          <label htmlFor="np-file">Or upload a video file</label>
-          <input id="np-file" type="file" accept="video/*" onChange={onVideoFileChange} />
-          <span className="sub">
-            Uploaded files aren&apos;t published anywhere else — they only play on this website.
+          <span className="hint">
+            We&apos;ll pull the title, description and thumbnail from the video — you can edit everything
+            before saving.
           </span>
         </div>
         {metaError && <div className="error-text">{metaError}</div>}
-        <VideoUploadStatus state={upload.state} />
-        <div className="row-actions edit-actions">
+
+        <div className="form-actions">
+          <button className="btn ghost" type="button" onClick={onCancel}>
+            Cancel
+          </button>
           <button className="btn" type="submit" disabled={fetchingMeta}>
             {fetchingMeta ? "Fetching…" : "Continue"}
-          </button>
-          <button
-            className="btn ghost"
-            type="button"
-            onClick={() => {
-              reset();
-              onOpenChange(false);
-            }}
-          >
-            Cancel
           </button>
         </div>
       </form>
@@ -177,18 +163,23 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
   }
 
   return (
-    <form className="cat-panel" ref={formRef} onSubmit={onSubmit}>
-      <h3>New project</h3>
-      <input type="hidden" name="youtubeUrl" value={youtubeUrl} readOnly />
-      <div className="field">
-        <label>{uploading ? "Video file" : "Video link"}</label>
-        <div className="row-title">
-          {uploading ? <VideoUploadStatus state={upload.state} /> : <span className="sub">{youtubeUrl}</span>}
-          <button className="btn ghost" type="button" onClick={onChangeVideo}>
-            Change
-          </button>
-        </div>
+    <form className="studio-form" ref={formRef} onSubmit={onSubmit}>
+      <div className="steps">
+        <span>1 · Video</span>
+        <span className="is-current">2 · Details</span>
       </div>
+
+      <input type="hidden" name="youtubeUrl" value={youtubeUrl} readOnly />
+      <div className="video-summary">
+        <div className="video-summary-main">
+          <span className="eyebrow">{uploading ? "Video file" : "Video link"}</span>
+          {uploading ? <VideoUploadStatus state={upload.state} /> : <span className="hint">{youtubeUrl}</span>}
+        </div>
+        <button className="btn ghost small" type="button" onClick={onChangeVideo}>
+          Change
+        </button>
+      </div>
+
       <div className="field">
         <label htmlFor="np-title">Title</label>
         <input
@@ -211,24 +202,24 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
           required
         />
       </div>
-      <div className="field">
-        <label htmlFor="np-client">Client</label>
-        <input id="np-client" name="client" placeholder="e.g. Orsa Bicycles (or Self-initiated)" />
+
+      <div className="field-row">
+        <div className="field">
+          <label htmlFor="np-client">Client</label>
+          <input id="np-client" name="client" placeholder="e.g. Orsa Bicycles" />
+        </div>
+        <div className="field">
+          <label htmlFor="np-role">Role</label>
+          <input id="np-role" name="role" placeholder="e.g. Director, Editor" />
+        </div>
+        <div className="field field-year">
+          <label htmlFor="np-year">Year</label>
+          <input id="np-year" name="year" type="number" defaultValue={new Date().getFullYear()} required />
+        </div>
       </div>
+
       <div className="field">
-        <label htmlFor="np-role">Role</label>
-        <input id="np-role" name="role" placeholder="e.g. Director, Editor" />
-      </div>
-      <div className="field">
-        <label htmlFor="np-year">Year</label>
-        <input id="np-year" name="year" type="number" defaultValue={new Date().getFullYear()} required />
-      </div>
-      <div className="field">
-        <label htmlFor="np-thumb">
-          {uploading
-            ? "Thumbnail (a frame is picked from the video once it's processed — upload a file to use your own)"
-            : "Thumbnail (pulled from the video — upload a file to replace it)"}
-        </label>
+        <label htmlFor="np-thumb">Thumbnail</label>
         {(thumbnailFilePreview ?? thumbnailUrl) && (
           <Thumbnail
             src={thumbnailFilePreview ?? thumbnailUrl ?? ""}
@@ -236,14 +227,25 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
             className="thumb-preview"
           />
         )}
-        <input id="np-thumb" name="thumbnail" type="file" accept="image/*" onChange={onThumbnailFileChange} />
+        <input
+          id="np-thumb"
+          className="file-input"
+          name="thumbnail"
+          type="file"
+          accept="image/*"
+          onChange={onThumbnailFileChange}
+        />
+        <span className="hint">
+          {uploading
+            ? "A frame is picked from the video once it's processed — upload an image to use your own."
+            : "Pulled from the video — upload an image to replace it."}
+        </span>
       </div>
+
       <div className="field">
         <label>Categories</label>
         <div className="checklist">
-          {categories.length === 0 && (
-            <span className="sub">Add a category below first.</span>
-          )}
+          {categories.length === 0 && <span className="hint">Add a category first.</span>}
           {categories.map((c) => (
             <label key={c}>
               <input type="checkbox" name="categories" value={c} /> {c}
@@ -251,20 +253,14 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
           ))}
         </div>
       </div>
+
       {error && <div className="error-text">{error}</div>}
-      <div className="row-actions edit-actions">
-        <button className="btn" type="submit" disabled={saving || !canSave}>
-          {saving ? "Saving…" : upload.state.status === "uploading" ? "Uploading video…" : "Save project"}
-        </button>
-        <button
-          className="btn ghost"
-          type="button"
-          onClick={() => {
-            reset();
-            onOpenChange(false);
-          }}
-        >
+      <div className="form-actions">
+        <button className="btn ghost" type="button" onClick={onCancel}>
           Cancel
+        </button>
+        <button className="btn" type="submit" disabled={saving || !canSave}>
+          {saving ? "Saving…" : uploadStatus === "uploading" ? "Uploading video…" : "Save project"}
         </button>
       </div>
     </form>

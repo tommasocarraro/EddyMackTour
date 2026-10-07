@@ -6,6 +6,15 @@ import { getBunnyEmbedUrl, getBunnyThumbnail, normalizeBunnyUrl } from "@/lib/bu
 // other providers were supported) can be a YouTube or a Vimeo one, or the
 // player URL of a file uploaded to Bunny Stream; these pick the right provider.
 
+export type VideoProvider = "youtube" | "vimeo" | "bunny";
+
+export function getVideoProvider(url: string): VideoProvider | null {
+  if (getYoutubeEmbedUrl(url)) return "youtube";
+  if (getVimeoEmbedUrl(url)) return "vimeo";
+  if (getBunnyEmbedUrl(url)) return "bunny";
+  return null;
+}
+
 export function isVideoUrl(url: string): boolean {
   return getVideoEmbedUrl(url) !== null;
 }

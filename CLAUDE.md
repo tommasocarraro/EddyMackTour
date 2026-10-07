@@ -84,7 +84,11 @@ feedback:
 - `/about` — bio, portrait (`public/about/portrait-web.jpg`, a 1200×1800 web copy of the full-size original), and a bold "Contact: <email>" line
   and a "Selected collaborations" logo strip (see "Adding a collaborator logo" below)
 - `/admin/login` — sign in
-- `/admin` — dashboard: add/edit/remove projects, add/remove categories (protected)
+- `/admin` — dashboard: add/edit/remove projects, add/remove categories (protected).
+  Projects are a searchable card grid, filterable by category; the add and edit forms
+  open in a slide-over panel (`src/components/admin/Drawer.tsx`). The Studio's styles are
+  the "studio (admin)" block of `globals.css`: same black + crimson, but text is off-white
+  there (variables overridden on `.studio-shell`), since red-on-black was too dim for forms
 
 ## Running it locally
 

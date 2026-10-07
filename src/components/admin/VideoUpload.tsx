@@ -103,7 +103,7 @@ export function VideoUploadStatus({ state }: { state: VideoUploadState }) {
     const percent = Math.round(state.progress * 100);
     return (
       <div className="upload-status">
-        <span className="sub">
+        <span className="hint">
           Uploading {state.fileName}… {percent}%
         </span>
         <progress value={state.progress} max={1} />
@@ -113,7 +113,7 @@ export function VideoUploadStatus({ state }: { state: VideoUploadState }) {
   if (state.status === "done") {
     return (
       <div className="upload-status">
-        <span className="sub">
+        <span className="hint">
           Uploaded {state.fileName}. It plays on the site once it has finished processing, usually within a
           few minutes.
         </span>
