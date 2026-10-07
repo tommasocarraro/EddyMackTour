@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Thumbnail from "@/components/Thumbnail";
+import { useVideoUpload, VideoUploadStatus } from "@/components/admin/VideoUpload";
 
 type Project = {
   id: string;
@@ -122,6 +123,11 @@ function EditProjectForm({
   const formRef = useRef<HTMLFormElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
+  const linkRef = useRef<HTMLInputElement>(null);
+  const upload = useVideoUpload();
+  const uploadStatus = upload.state.status;
+  // An uploaded file has to be fully sent before the project can be saved.
+  const canSave = uploadStatus !== "uploading";
   const selectedCategories = new Set(project.categories.map((c) => c.name));
 
   useEffect(() => {
@@ -152,6 +158,20 @@ function EditProjectForm({
     }
   }
 
+  // Replaces the project's video with an uploaded file: the link field then
+  // holds the new file's player URL.
+  async function onVideoFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = await upload.start(file);
+    if (linkRef.current) linkRef.current.value = url ?? project.youtubeUrl;
+  }
+
+  // A failed upload is discarded, so the project keeps the video it had.
+  useEffect(() => {
+    if (uploadStatus === "error" && linkRef.current) linkRef.current.value = project.youtubeUrl;
+  }, [uploadStatus, project.youtubeUrl]);
+
   function onThumbnailFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (thumbnailFilePreview) URL.revokeObjectURL(thumbnailFilePreview);
     const file = e.target.files?.[0];
@@ -175,6 +195,7 @@ function EditProjectForm({
       return;
     }
 
+    upload.commit();
     onSaved();
   }
 
@@ -206,11 +227,18 @@ function EditProjectForm({
         <input
           id={`ep-link-${project.id}`}
           name="youtubeUrl"
+          ref={linkRef}
           defaultValue={project.youtubeUrl}
           required
+          readOnly={uploadStatus === "uploading" || uploadStatus === "done"}
           onBlur={onVideoUrlBlur}
         />
         {fetchingMeta && <span className="sub">Fetching details from the video…</span>}
+      </div>
+      <div className="field">
+        <label htmlFor={`ep-file-${project.id}`}>Or replace the video with an uploaded file</label>
+        <input id={`ep-file-${project.id}`} type="file" accept="video/*" onChange={onVideoFileChange} />
+        <VideoUploadStatus state={upload.state} />
       </div>
       <div className="field">
         <label htmlFor={`ep-client-${project.id}`}>Client</label>
@@ -256,8 +284,8 @@ function EditProjectForm({
       </div>
       {error && <div className="error-text">{error}</div>}
       <div className="row-actions edit-actions">
-        <button className="btn" type="submit" disabled={saving}>
-          {saving ? "Saving…" : "Save changes"}
+        <button className="btn" type="submit" disabled={saving || !canSave}>
+          {saving ? "Saving…" : uploadStatus === "uploading" ? "Uploading video…" : "Save changes"}
         </button>
         <button className="btn ghost" type="button" onClick={onCancel}>
           Cancel

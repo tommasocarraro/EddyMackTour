@@ -1169,6 +1169,20 @@ table.proj tr:last-child td {
 .edit-actions {
   margin-top: 4px;
 }
+.upload-status {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+.upload-status .sub {
+  margin-bottom: 0;
+}
+.upload-status progress {
+  width: 100%;
+  max-width: 320px;
+  accent-color: var(--accent);
+}
 .cat-add {
   display: flex;
   gap: 10px;

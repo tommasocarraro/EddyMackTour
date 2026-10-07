@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Thumbnail from "@/components/Thumbnail";
+import { titleFromFileName, useVideoUpload, VideoUploadStatus } from "@/components/admin/VideoUpload";
 
 type Props = {
   categories: string[];
@@ -22,6 +23,8 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const upload = useVideoUpload();
+  const uploading = upload.state.status !== "idle";
 
   useEffect(() => {
     return () => {
@@ -30,6 +33,7 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
   }, [thumbnailFilePreview]);
 
   function reset() {
+    upload.discard();
     setStep("url");
     setYoutubeUrl("");
     setTitle("");
@@ -46,6 +50,7 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
     const url = youtubeUrl.trim();
     if (!url) return;
 
+    upload.discard();
     setFetchingMeta(true);
     setMetaError(null);
     try {
@@ -65,6 +70,28 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
     } finally {
       setFetchingMeta(false);
     }
+  }
+
+  async function onVideoFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setMetaError(null);
+    const url = await upload.start(file);
+    if (!url) return;
+    setYoutubeUrl(url);
+    setTitle(titleFromFileName(file.name));
+    setDescription("");
+    setThumbnailUrl(null);
+    setStep("details");
+  }
+
+  function onChangeVideo() {
+    if (uploading) {
+      upload.discard();
+      setYoutubeUrl("");
+    }
+    setStep("url");
   }
 
   function onThumbnailFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -91,10 +118,14 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
     }
 
     formRef.current.reset();
+    upload.commit();
     reset();
     onOpenChange(false);
     onCreated();
   }
+
+  // An uploaded file has to be fully sent before the project can be saved.
+  const canSave = !uploading || upload.state.status === "done";
 
   if (!open) return null;
 
@@ -117,7 +148,15 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
             everything before saving.
           </span>
         </div>
+        <div className="field">
+          <label htmlFor="np-file">Or upload a video file</label>
+          <input id="np-file" type="file" accept="video/*" onChange={onVideoFileChange} />
+          <span className="sub">
+            Uploaded files aren&apos;t published anywhere else — they only play on this website.
+          </span>
+        </div>
         {metaError && <div className="error-text">{metaError}</div>}
+        <VideoUploadStatus state={upload.state} />
         <div className="row-actions edit-actions">
           <button className="btn" type="submit" disabled={fetchingMeta}>
             {fetchingMeta ? "Fetching…" : "Continue"}
@@ -142,10 +181,10 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
       <h3>New project</h3>
       <input type="hidden" name="youtubeUrl" value={youtubeUrl} readOnly />
       <div className="field">
-        <label>Video link</label>
+        <label>{uploading ? "Video file" : "Video link"}</label>
         <div className="row-title">
-          <span className="sub">{youtubeUrl}</span>
-          <button className="btn ghost" type="button" onClick={() => setStep("url")}>
+          {uploading ? <VideoUploadStatus state={upload.state} /> : <span className="sub">{youtubeUrl}</span>}
+          <button className="btn ghost" type="button" onClick={onChangeVideo}>
             Change
           </button>
         </div>
@@ -185,7 +224,11 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
         <input id="np-year" name="year" type="number" defaultValue={new Date().getFullYear()} required />
       </div>
       <div className="field">
-        <label htmlFor="np-thumb">Thumbnail (pulled from the video — upload a file to replace it)</label>
+        <label htmlFor="np-thumb">
+          {uploading
+            ? "Thumbnail (a frame is picked from the video once it's processed — upload a file to use your own)"
+            : "Thumbnail (pulled from the video — upload a file to replace it)"}
+        </label>
         {(thumbnailFilePreview ?? thumbnailUrl) && (
           <Thumbnail
             src={thumbnailFilePreview ?? thumbnailUrl ?? ""}
@@ -210,8 +253,8 @@ export default function AddProjectForm({ categories, open, onOpenChange, onCreat
       </div>
       {error && <div className="error-text">{error}</div>}
       <div className="row-actions edit-actions">
-        <button className="btn" type="submit" disabled={saving}>
-          {saving ? "Saving…" : "Save project"}
+        <button className="btn" type="submit" disabled={saving || !canSave}>
+          {saving ? "Saving…" : upload.state.status === "uploading" ? "Uploading video…" : "Save project"}
         </button>
         <button
           className="btn ghost"

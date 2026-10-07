@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { isAuthenticated } from "@/lib/auth";
 import { saveThumbnail, isUploadedFile } from "@/lib/uploads";
 import { getVideoThumbnail, normalizeVideoUrl } from "@/lib/video";
+import { deleteBunnyVideo, getBunnyVideoId } from "@/lib/bunny";
 
 export async function PATCH(
   request: NextRequest,
@@ -57,6 +58,12 @@ export async function PATCH(
     include: { categories: true },
   });
 
+  // A replaced uploaded video would otherwise stay in Bunny Stream, still billed.
+  const replacedVideoId = getBunnyVideoId(current.youtubeUrl);
+  if (replacedVideoId && project.youtubeUrl !== current.youtubeUrl) {
+    await deleteBunnyVideo(replacedVideoId);
+  }
+
   return NextResponse.json(project);
 }
 
@@ -68,6 +75,8 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await prisma.project.delete({ where: { id: params.id } });
+  const project = await prisma.project.delete({ where: { id: params.id } });
+  const videoId = getBunnyVideoId(project.youtubeUrl);
+  if (videoId) await deleteBunnyVideo(videoId);
   return NextResponse.json({ ok: true });
 }

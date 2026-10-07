@@ -1,6 +1,7 @@
 # Eddy Mack Tour — video portfolio
 
-Portfolio website for a videomaker (creations hosted on YouTube or Vimeo). Public gallery +
+Portfolio website for a videomaker (creations uploaded from the Studio to Bunny Stream, or
+linked from YouTube or Vimeo). Public gallery +
 project detail pages, plus a password-protected "Studio" area where he can add/edit
 projects, upload thumbnails, and manage categories.
 
@@ -59,7 +60,7 @@ feedback:
 ## Routes
 
 - `/` — gallery, filterable by category (`?category=Name`)
-- `/project/[slug]` — detail page, embeds the YouTube or Vimeo video. Clicking a card in the
+- `/project/[slug]` — detail page, embeds the video's player (Bunny Stream, YouTube or Vimeo). Clicking a card in the
   gallery opens it instead as a centered dialog over the blurred gallery (~44vw wide,
   kept narrow so the blur shows around it; closes via the X, a click outside, or Escape — all `router.back()`).
   The dialog grows out of the clicked card and shrinks back into it on close. This is a
@@ -117,12 +118,35 @@ Also set `SESSION_SECRET` to a long random string (e.g. `openssl rand -hex 32`).
 `.env` needs `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` —
 free account at cloudinary.com, values are on its dashboard.
 
-### Video links: YouTube and Vimeo
+### Videos: uploaded files (Bunny Stream), YouTube and Vimeo links
 
-A project's video link can be a YouTube or a Vimeo one. It's stored in
-`Project.youtubeUrl` (the column predates Vimeo support and wasn't renamed, to avoid a
-migration). `src/lib/video.ts` picks the provider and is what the rest of the code
-calls; `src/lib/youtube.ts` and `src/lib/vimeo.ts` hold the provider specifics.
+A project's video is either a file uploaded from the Studio or a YouTube/Vimeo link.
+Either way it's stored as a URL in `Project.youtubeUrl` (the column predates the other
+providers and wasn't renamed, to avoid a migration); for an uploaded file that's its
+Bunny player URL (`player.mediadelivery.net/embed/<library>/<video>`).
+`src/lib/video.ts` picks the provider and is what the rest of the code calls;
+`src/lib/bunny.ts`, `src/lib/youtube.ts` and `src/lib/vimeo.ts` hold the provider specifics.
+
+Uploaded files go to Bunny Stream because Eddy wants the videos watchable only on this
+site (music-rights/monetization problems on YouTube; Vimeo's plan with domain-restricted
+embeds was too expensive). Bunny has no public page for a video, only the embedded player.
+
+- `.env` needs `BUNNY_STREAM_LIBRARY_ID`, `BUNNY_STREAM_API_KEY` and
+  `BUNNY_STREAM_CDN_HOSTNAME`, all on the Stream library's "API" page in the Bunny
+  dashboard. Without them only the upload option fails; links still work.
+- The domain lock is a one-time library setting, not code: add the site's domain (and
+  `localhost:3000` for dev: Bunny matches the port too, so plain `localhost` leaves
+  thumbnails refused with a 403) under the library's Security > Allowed domains.
+- Upload flow: `POST /api/video-uploads` creates an empty Bunny video and returns signed
+  headers; the browser then sends the file straight to Bunny with `tus-js-client`
+  (resumable, never through this server). `src/components/admin/VideoUpload.tsx` has the
+  hook both Studio forms use. The project can be saved once the upload has finished.
+- Title, description and categories are typed in the Studio (a file has none of its own;
+  the title is pre-filled from the file name). The thumbnail is the frame Bunny picks,
+  served from the CDN hostname; it 404s until the video is processed, and the site shows
+  its fallback logo meanwhile. Uploading a thumbnail file overrides it.
+- Uploads are deleted from Bunny when they'd otherwise be orphaned (and still billed):
+  an upload cancelled or never saved, a project's video replaced, a project removed.
 
 In the Studio, `src/app/api/video-metadata/route.ts` looks up the title, description
 and thumbnail for a link: when adding a project, and on blur of the link field when
