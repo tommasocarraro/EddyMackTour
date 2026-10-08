@@ -1,22 +1,25 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef } from "react";
+import { ProjectInfo, ProjectPlayer, type ProjectDetailData } from "@/components/ProjectDetail";
 import { PlayerReadyContext } from "@/components/VideoPlayer";
 
-// The dialog itself is static; opening and closing are animated by Gallery as a
-// view transition that morphs the clicked card into it (see globals.css).
+// A project opened from the gallery: it fills the window, the video starts on
+// its own and stays in view while the details scroll (see "project dialog" in
+// globals.css for the two layouts). The dialog itself is static; opening and
+// closing are animated by Gallery as a view transition that morphs the clicked
+// card into it.
 export default function ProjectModal({
-  title,
+  project,
   playerReady,
   onClose,
-  children,
 }: {
-  title: string;
+  project: ProjectDetailData;
   playerReady: boolean;
   onClose: () => void;
-  children: React.ReactNode;
 }) {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const closingRef = useRef(false);
 
   function close() {
@@ -45,22 +48,42 @@ export default function ProjectModal({
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
+  // Brings the details fully up over the video, or back down if they already are.
+  function toggleInfo() {
+    const scroll = scrollRef.current!;
+    const max = scroll.scrollHeight - scroll.clientHeight;
+    scroll.scrollTo({ top: scroll.scrollTop < max / 2 ? max : 0, behavior: "smooth" });
+  }
+
   return (
-    <div
-      className="modal-overlay"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) close();
-      }}
-    >
-      <div className="modal" role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} ref={dialogRef}>
-        <div className="modal-scroll">
+    <div className="modal" role="dialog" aria-modal="true" aria-label={project.title} tabIndex={-1} ref={dialogRef}>
+      <div className="modal-scroll" ref={scrollRef}>
+        <div className="modal-bar">
+          <h2 className="modal-title">{project.title}</h2>
           <button className="modal-close" aria-label="Close" onClick={close}>
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6">
               <path d="M5 5l14 14M19 5L5 19" />
             </svg>
           </button>
-          <h2 className="modal-title">{title}</h2>
-          <PlayerReadyContext.Provider value={playerReady}>{children}</PlayerReadyContext.Provider>
+        </div>
+        <div className="modal-stage">
+          <PlayerReadyContext.Provider value={playerReady}>
+            <ProjectPlayer project={project} autoplay />
+          </PlayerReadyContext.Provider>
+        </div>
+        <div className="modal-info">
+          <button className="modal-peek" onClick={toggleInfo}>
+            <span>
+              {project.categories.map((c) => c.name).join(" / ")} · {project.year}
+            </span>
+            <span className="modal-peek-hint">
+              Details
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <path d="M6 14l6-6 6 6" />
+              </svg>
+            </span>
+          </button>
+          <ProjectInfo project={project} />
         </div>
       </div>
     </div>

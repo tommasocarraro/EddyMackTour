@@ -1,6 +1,6 @@
 import { getYoutubeEmbedUrl, getYoutubeMetadata, getYoutubeThumbnail } from "@/lib/youtube";
 import { getVimeoEmbedUrl, getVimeoMetadata, normalizeVimeoUrl } from "@/lib/vimeo";
-import { getBunnyEmbedUrl, getBunnyThumbnail, normalizeBunnyUrl } from "@/lib/bunny";
+import { getBunnyEmbedUrl, getBunnyStreamUrl, getBunnyThumbnail, normalizeBunnyUrl } from "@/lib/bunny";
 
 // A project's video link (stored in `Project.youtubeUrl`, named before the
 // other providers were supported) can be a YouTube or a Vimeo one, or the
@@ -19,8 +19,20 @@ export function isVideoUrl(url: string): boolean {
   return getVideoEmbedUrl(url) !== null;
 }
 
-export function getVideoEmbedUrl(url: string): string | null {
-  return getYoutubeEmbedUrl(url) ?? getVimeoEmbedUrl(url) ?? getBunnyEmbedUrl(url);
+// `autoplay` asks the player to start on its own. Browsers only allow that with
+// sound right after a click on this site (opening a project from the gallery);
+// otherwise the player starts muted or waits for a tap.
+export function getVideoEmbedUrl(url: string, autoplay = false): string | null {
+  return (
+    getYoutubeEmbedUrl(url, autoplay) ?? getVimeoEmbedUrl(url, autoplay) ?? getBunnyEmbedUrl(url, autoplay)
+  );
+}
+
+// Uploaded files only: the stream the site's own player plays. Server-side
+// only (it needs the CDN hostname from the environment), so pages work it out
+// and pass it down. Null for YouTube/Vimeo links, which use their embeds.
+export function getVideoStreamUrl(url: string): string | null {
+  return getBunnyStreamUrl(url);
 }
 
 export function normalizeVideoUrl(url: string): string {

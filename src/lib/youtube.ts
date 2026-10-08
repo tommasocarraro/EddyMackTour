@@ -1,6 +1,8 @@
-export function getYoutubeEmbedUrl(url: string): string | null {
+export function getYoutubeEmbedUrl(url: string, autoplay = false): string | null {
   const id = getYoutubeId(url);
-  return id ? `https://www.youtube.com/embed/${id}` : null;
+  if (!id) return null;
+  // playsinline keeps iPhones from jumping to their native fullscreen player.
+  return `https://www.youtube.com/embed/${id}${autoplay ? "?autoplay=1&playsinline=1" : ""}`;
 }
 
 export function getYoutubeThumbnail(url: string): string | null {

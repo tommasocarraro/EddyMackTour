@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
 import ProjectDetail from "@/components/ProjectDetail";
+import { getVideoStreamUrl } from "@/lib/video";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +36,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
           <h2>{project.title}</h2>
         </div>
 
-        <ProjectDetail project={project} />
+        <ProjectDetail project={{ ...project, streamUrl: getVideoStreamUrl(project.youtubeUrl) }} />
 
         {next && next.id !== project.id && (
           <Link className="next-project" href={`/project/${next.slug}`}>

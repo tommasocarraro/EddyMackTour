@@ -61,8 +61,13 @@ feedback:
 
 - `/` — gallery, filterable by category (`?category=Name`)
 - `/project/[slug]` — detail page, embeds the video's player (Bunny Stream, YouTube or Vimeo). Clicking a card in the
-  gallery opens it instead as a centered dialog over the blurred gallery (~44vw wide,
-  kept narrow so the blur shows around it; closes via the X, a click outside, or Escape — all `router.back()`).
+  gallery opens it instead as a dialog that fills the window, with the video starting on its own
+  (`autoplay` on the embed URL, dialog only: the click is what lets browsers play it with sound; iPhones
+  may still start it muted). Title and X sit in a slim top bar; it closes via the X or Escape — both `router.back()`.
+  On wide windows the video takes everything but that bar and a bottom strip (category · year, "Details"),
+  which is the top of the details sheet: scrolling brings it up over the pinned video. On upright
+  screens (`max-aspect-ratio: 1/1`) the video is pinned under the bar and the details scroll beneath it.
+  The player is always a 16:9 box, so the morph below and the poster line up.
   The dialog grows out of the clicked card and shrinks back into it on close. This is a
   View Transition started in `Gallery.tsx`: the clicked card (found via its `data-slug`)
   temporarily takes the dialog's `view-transition-name`s, so the thumbnail flies into the
@@ -77,7 +82,8 @@ feedback:
   `router.back()` on close) runs only after the morph finishes. Run mid-animation, it made
   Next re-render during the transition, so on real phones the close often popped instead
   of animating. A direct visit or refresh shows the full page.
-  Both share `src/components/ProjectDetail.tsx`; the dialog intentionally has no "Next
+  Both use the player and details from `src/components/ProjectDetail.tsx` (the dialog lays
+  them out itself in `ProjectModal.tsx`); the dialog intentionally has no "Next
   project" link or footer. The player iframe (`src/components/VideoPlayer.tsx`) only
   mounts once the open animation finishes (loading it mid-animation made it stutter), with
   the thumbnail shown in its place until the player has loaded
@@ -149,6 +155,14 @@ embeds was too expensive). Bunny has no public page for a video, only the embedd
   the title is pre-filled from the file name). The thumbnail is the frame Bunny picks,
   served from the CDN hostname; it 404s until the video is processed, and the site shows
   its fallback logo meanwhile. Uploading a thumbnail file overrides it.
+- Uploaded videos play in the site's own player (`src/components/StreamPlayer.tsx`, styles in the
+  "stream player" block of `globals.css`), not Bunny's embed, so the controls are in the site's
+  crimson and black. It plays the video's HLS stream from the CDN hostname
+  (`<hostname>/<video>/playlist.m3u8`, built server-side by `getVideoStreamUrl` and passed down as
+  `streamUrl`) through `hls.js`, or natively on iPhones. The library's allowed domains guard the
+  stream files too (403 for any other referrer, or none), so the domain lock still holds.
+  Without `BUNNY_STREAM_CDN_HOSTNAME` it falls back to Bunny's embed. YouTube/Vimeo links
+  always use their own embeds (`VideoPlayer.tsx`).
 - Uploads are deleted from Bunny when they'd otherwise be orphaned (and still billed):
   an upload cancelled or never saved, a project's video replaced, a project removed.
 

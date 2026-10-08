@@ -24,10 +24,14 @@ export function normalizeVimeoUrl(url: string): string | null {
   return `https://vimeo.com/${video.id}${video.hash ? `/${video.hash}` : ""}`;
 }
 
-export function getVimeoEmbedUrl(url: string): string | null {
+export function getVimeoEmbedUrl(url: string, autoplay = false): string | null {
   const video = parseVimeoUrl(url);
   if (!video) return null;
-  return `https://player.vimeo.com/video/${video.id}${video.hash ? `?h=${video.hash}` : ""}`;
+  const params = new URLSearchParams();
+  if (video.hash) params.set("h", video.hash);
+  if (autoplay) params.set("autoplay", "1");
+  const query = params.toString();
+  return `https://player.vimeo.com/video/${video.id}${query ? `?${query}` : ""}`;
 }
 
 // Vimeo has no static thumbnail URL, so title, description and thumbnail all

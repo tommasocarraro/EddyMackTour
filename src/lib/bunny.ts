@@ -34,9 +34,19 @@ export function normalizeBunnyUrl(url: string): string | null {
 }
 
 // Bunny's player autoplays unless told not to; YouTube's and Vimeo's don't.
-export function getBunnyEmbedUrl(url: string): string | null {
+export function getBunnyEmbedUrl(url: string, autoplay = false): string | null {
   const canonical = normalizeBunnyUrl(url);
-  return canonical ? `${canonical}?autoplay=false` : null;
+  return canonical ? `${canonical}?autoplay=${autoplay}` : null;
+}
+
+// The video's HLS stream on the library's CDN, which the site's own player
+// (`StreamPlayer`) plays instead of embedding Bunny's. The library's allowed
+// domains guard these files too: any other referrer, or none, gets a 403.
+export function getBunnyStreamUrl(url: string): string | null {
+  const video = parseBunnyUrl(url);
+  const hostname = process.env.BUNNY_STREAM_CDN_HOSTNAME;
+  if (!video || !hostname) return null;
+  return `https://${hostname}/${video.videoId}/playlist.m3u8`;
 }
 
 // Bunny picks a frame once the video has been processed; until then this URL

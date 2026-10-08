@@ -62,8 +62,8 @@ img {
 
 @media (prefers-reduced-motion: reduce) {
   * {
-    animation-duration: 0.001ms !important;
-    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms;
+    transition-duration: 0.001ms;
   }
 }
 
@@ -594,7 +594,7 @@ footer.site {
   border-top: 0.5px solid var(--line);
   font-family: var(--font-fraunces), serif;
   font-weight: 700;
-  font-size: 19px !important;
+  font-size: 19px;
 }
 .about-contact a {
   color: var(--ink);
@@ -721,6 +721,259 @@ footer.site {
   opacity: 1;
 }
 
+/* ---- stream player ----
+   The site's own player for uploaded videos (StreamPlayer.tsx): crimson
+   controls over a black fade at the bottom of the video, which fade out while
+   it plays untouched. */
+.sp {
+  --sp-ink: var(--accent);
+  position: absolute;
+  inset: 0;
+  color: var(--sp-ink);
+  font-family: var(--font-sans);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.sp video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.sp.is-started video {
+  opacity: 1;
+}
+/* Covers the thumbnail underneath: a video narrower than the box (a vertical
+   one) would otherwise leave it showing at the sides. On the box rather than
+   the <video>, whose own background not every browser paints there. */
+.sp {
+  transition: background-color 0.35s ease;
+}
+.sp.is-started {
+  background: #000;
+}
+.sp.is-idle {
+  cursor: none;
+}
+/* :where keeps this reset from outweighing the buttons' own rules below */
+:where(.sp) button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+.sp-big,
+.sp-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 76px;
+  height: 76px;
+  margin: -38px 0 0 -38px;
+  border-radius: 50%;
+}
+.sp-big {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 0 4px;
+  border: 1.5px solid currentColor;
+  background: rgba(0, 0, 0, 0.45);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+.sp-big:hover {
+  background: var(--sp-ink);
+  color: #000;
+}
+.sp-spinner {
+  border: 1.5px solid rgba(225, 29, 63, 0.25);
+  border-top-color: var(--sp-ink);
+  animation: sp-spin 0.9s linear infinite;
+  pointer-events: none;
+}
+@keyframes sp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.sp-message {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  background: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  text-align: center;
+}
+.sp-unmute {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 8px 14px;
+  border: 1px solid currentColor;
+  background: rgba(0, 0, 0, 0.6);
+  font-family: var(--font-brand);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.sp-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 44px 14px 8px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 0.5) 55%, transparent);
+  transition: opacity 0.25s ease;
+}
+.sp.is-idle .sp-controls {
+  opacity: 0;
+  pointer-events: none;
+}
+/* Taller than the visible track, so it's easy to grab */
+.sp-seek {
+  position: relative;
+  height: 18px;
+  cursor: pointer;
+  touch-action: none;
+  outline: none;
+}
+.sp-seek-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7px;
+  height: 3px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.2);
+  transition:
+    top 0.12s ease,
+    height 0.12s ease;
+}
+.sp-seek:hover .sp-seek-track,
+.sp-seek:focus-visible .sp-seek-track {
+  top: 6px;
+  height: 5px;
+}
+.sp-seek-buffered,
+.sp-seek-played {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+.sp-seek-buffered {
+  background: rgba(255, 255, 255, 0.28);
+}
+.sp-seek-played {
+  background: var(--sp-ink);
+}
+.sp-seek-thumb {
+  position: absolute;
+  top: 3px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: var(--sp-ink);
+  transform: scale(0);
+  transition: transform 0.12s ease;
+}
+.sp-seek:hover .sp-seek-thumb,
+.sp-seek:focus-visible .sp-seek-thumb {
+  transform: scale(1);
+}
+.sp-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 2px;
+}
+.sp-button {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  opacity: 0.9;
+  transition: opacity 0.15s ease;
+}
+.sp-button:hover {
+  opacity: 1;
+}
+.sp-volume {
+  flex: none;
+  width: 72px;
+  height: 18px;
+  margin: 0 8px 0 0;
+  background: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.sp-volume::-webkit-slider-runnable-track {
+  height: 3px;
+  background: linear-gradient(to right, var(--sp-ink) var(--sp-level), rgba(255, 255, 255, 0.2) var(--sp-level));
+}
+.sp-volume::-moz-range-track {
+  height: 3px;
+  background: linear-gradient(to right, var(--sp-ink) var(--sp-level), rgba(255, 255, 255, 0.2) var(--sp-level));
+}
+.sp-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px;
+  height: 11px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: var(--sp-ink);
+}
+.sp-volume::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: none;
+  border-radius: 50%;
+  background: var(--sp-ink);
+}
+.sp-time {
+  margin-left: 4px;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.sp-gap {
+  flex: 1;
+}
+/* Phones set the volume with their own buttons */
+@media (hover: none) {
+  .sp-volume {
+    display: none;
+  }
+  .sp-seek-thumb {
+    transform: scale(1);
+  }
+}
+@media (max-width: 760px) {
+  .sp-big,
+  .sp-spinner {
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+  }
+  .sp-controls {
+    padding: 30px 6px 2px;
+  }
+}
+
 .detail-body {
   display: grid;
   grid-template-columns: minmax(0, 62ch) 220px;
@@ -731,11 +984,13 @@ footer.site {
 }
 @media (max-width: 800px) {
   .detail-body {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 28px;
   }
 }
 .detail-body p {
+  /* Descriptions often carry long links, which otherwise push past the screen edge */
+  overflow-wrap: anywhere;
   line-height: 1.65;
   font-size: 16px;
   color: var(--ink);
@@ -794,51 +1049,53 @@ footer.site {
   transform: translateX(4px);
 }
 
-/* ---- project dialog (intercepted /project/[slug]) ---- */
-.modal-overlay {
+/* ---- project dialog (a card opened from the gallery) ----
+   Fills the window. On wide windows the video takes all of it except the title
+   bar and a strip at the bottom; that strip is the top of the details sheet,
+   which scrolls up over the pinned video. On upright ones (phones) the video is
+   pinned under the title bar and the details scroll beneath it. */
+.modal {
+  --bar-h: 52px;
+  --peek-h: 52px;
+  --stage-h: calc(100vh - var(--bar-h) - var(--peek-h));
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4vh 0;
-  background: rgba(0, 0, 0, 0.5);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-}
-/* Kept narrow so plenty of the blurred gallery shows around it */
-.modal {
-  position: relative;
-  width: 44vw;
   background: var(--paper);
-  box-shadow:
-    0 30px 90px rgba(0, 0, 0, 0.85),
-    0 0 70px rgba(196, 18, 48, 0.14);
   outline: none;
   view-transition-name: project-dialog;
 }
+@supports (height: 100dvh) {
+  .modal {
+    --stage-h: calc(100dvh - var(--bar-h) - var(--peek-h));
+  }
+}
 .modal-scroll {
-  position: relative;
-  max-height: 84vh;
+  height: 100%;
   overflow-y: auto;
-  padding: 34px 38px 14px;
+  overscroll-behavior: contain;
+}
+.modal-bar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: var(--bar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 8px 0 24px;
+  background: var(--paper);
 }
 .modal-title {
-  font-size: clamp(24px, 3vw, 36px);
-  padding-right: 44px;
-}
-.modal .player {
-  margin-top: 20px;
-  view-transition-name: project-media;
-}
-.modal .detail-body {
-  margin-top: 26px;
+  min-width: 0;
+  font-size: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .modal-close {
-  position: absolute;
-  top: 24px;
-  right: 24px;
+  flex: none;
   width: 40px;
   height: 40px;
   display: flex;
@@ -853,25 +1110,86 @@ footer.site {
 .modal-close:hover {
   transform: rotate(90deg);
 }
-@media (max-width: 900px) {
-  .modal {
-    width: calc(100vw - 32px);
+.modal-stage {
+  position: sticky;
+  top: var(--bar-h);
+  z-index: 1;
+  height: var(--stage-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+}
+/* The largest 16:9 box that fits the stage; the players letterbox other ratios */
+.modal .player {
+  flex: none;
+  margin: 0;
+  width: min(100%, calc(var(--stage-h) * 16 / 9));
+  view-transition-name: project-media;
+}
+.modal-info {
+  position: relative;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.88);
+}
+.modal-peek {
+  width: 100%;
+  height: var(--peek-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 24px;
+  background: none;
+  border: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.modal-peek-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+.modal .detail-body {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 24px 44px;
+}
+@media (max-aspect-ratio: 1/1) {
+  .modal-bar {
+    padding-left: 16px;
   }
-  .modal-scroll {
-    padding: 26px 20px 8px;
+  .modal-title {
+    font-size: 18px;
   }
-  .modal-close {
-    top: 14px;
-    right: 12px;
+  .modal-stage {
+    z-index: 2;
+    height: auto;
+  }
+  .modal .player {
+    width: 100%;
+  }
+  .modal-info {
+    z-index: 1;
+    background: var(--paper);
+  }
+  .modal-peek {
+    display: none;
+  }
+  .modal .detail-body {
+    padding: 24px 16px 44px;
   }
 }
 
 /* ---- card ⇄ dialog morph ----
    Gallery.tsx opens/closes the dialog inside a view transition with the clicked
    card named like the dialog: the thumbnail (project-media) flies between the
-   card and the player, the dialog panel (project-dialog) grows out of the card
-   behind it, and the rest of the page (root) cross-fades into the blurred view.
-   All of it runs on snapshots, so nothing is re-laid-out or re-blurred per frame. */
+   card and the player, and the dialog panel (project-dialog) grows out of the
+   card behind it until it fills the window.
+   All of it runs on snapshots, so nothing is re-laid-out per frame. */
 :root[data-vt="open"]::view-transition-group(*),
 :root[data-vt="open"]::view-transition-old(*),
 :root[data-vt="open"]::view-transition-new(*) {
@@ -914,18 +1232,6 @@ footer.site {
 :root[data-vt="close"]::view-transition-old(project-media) {
   animation: none;
   opacity: 1;
-}
-/* Snapshots don't capture the overlay's backdrop-filter (the blur would only pop
-   in once the transition ends), so during the transition the blur is applied to
-   the page snapshot instead and cross-fades in from the click. A static filter,
-   so only opacity animates. */
-:root[data-vt] .modal-overlay {
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
-:root[data-vt="open"]::view-transition-new(root),
-:root[data-vt="close"]::view-transition-old(root) {
-  filter: blur(12px);
 }
 /* The panel starts hidden under the thumbnail and fades in as it grows */
 :root[data-vt="open"]::view-transition-new(project-dialog) {
@@ -1752,5 +2058,5 @@ footer.site {
 }
 
 [hidden] {
-  display: none !important;
+  display: none;
 }

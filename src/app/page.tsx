@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
 import Gallery from "@/components/Gallery";
+import { getVideoStreamUrl } from "@/lib/video";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,7 @@ export default async function GalleryPage({
               title: p.title,
               description: p.description,
               youtubeUrl: p.youtubeUrl,
+              streamUrl: getVideoStreamUrl(p.youtubeUrl),
               thumbnail: p.thumbnail,
               client: p.client,
               role: p.role,

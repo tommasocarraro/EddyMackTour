@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import ProjectDetail, { type ProjectDetailData } from "@/components/ProjectDetail";
+import type { ProjectDetailData } from "@/components/ProjectDetail";
 import ProjectModal from "@/components/ProjectModal";
 import Thumbnail from "@/components/Thumbnail";
 
@@ -47,7 +47,7 @@ function morph(kind: "open" | "close", update: () => void) {
   return vt;
 }
 
-// Clicking a card opens the project as a dialog straight from the data already
+// Clicking a card opens the project as a window-filling dialog straight from the data already
 // on the page (no server round trip, so the open animation starts on click).
 // The URL still changes to /project/[slug] via history.pushState, which Next
 // keeps in sync with usePathname; back/refresh/direct visits behave as usual.
@@ -105,7 +105,7 @@ export default function Gallery({ projects }: { projects: GalleryProject[] }) {
     wantSlugRef.current = null;
     const card = findCard(openSlug);
     // Snapshot the poster rather than a playing video.
-    document.querySelector<HTMLElement>(".modal .player iframe")?.style.setProperty("visibility", "hidden");
+    document.querySelector<HTMLElement>(".modal .player > :not(.still)")?.style.setProperty("visibility", "hidden");
     const vt = morph("close", () => {
       flushSync(() => setOpenSlug(null));
       nameCard(card, true);
@@ -145,9 +145,7 @@ export default function Gallery({ projects }: { projects: GalleryProject[] }) {
       </section>
 
       {open && (
-        <ProjectModal key={open.slug} title={open.title} playerReady={settled} onClose={closeProject}>
-          <ProjectDetail project={open} />
-        </ProjectModal>
+        <ProjectModal key={open.slug} project={open} playerReady={settled} onClose={closeProject} />
       )}
     </>
   );
