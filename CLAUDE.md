@@ -64,10 +64,11 @@ feedback:
   gallery opens it instead as a dialog that fills the window, with the video starting on its own
   (`autoplay` on the embed URL, dialog only: the click is what lets browsers play it with sound; iPhones
   may still start it muted). Title and X sit in a slim top bar; it closes via the X or Escape — both `router.back()`.
-  On wide windows the video takes everything but that bar and a bottom strip (category · year, "Details"),
-  which is the top of the details sheet: scrolling brings it up over the pinned video. On upright
-  screens (`max-aspect-ratio: 1/1`) the video is pinned under the bar and the details scroll beneath it.
-  The player is always a 16:9 box, so the morph below and the poster line up.
+  The video takes everything but that bar and a bottom strip (category · year, "Details"),
+  which is the top of the details sheet: scrolling brings it up over the pinned video.
+  The player is a 16:9 box, so the morph below and the poster line up. The exception: on upright
+  screens (`max-aspect-ratio: 1/1`) an uploaded video's box takes the video's own shape once it's
+  known (`--video-ratio`, set by `StreamPlayer`), so a vertical video fills a phone screen.
   The dialog grows out of the clicked card and shrinks back into it on close. This is a
   View Transition started in `Gallery.tsx`: the clicked card (found via its `data-slug`)
   temporarily takes the dialog's `view-transition-name`s, so the thumbnail flies into the

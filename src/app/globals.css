@@ -1050,10 +1050,9 @@ footer.site {
 }
 
 /* ---- project dialog (a card opened from the gallery) ----
-   Fills the window. On wide windows the video takes all of it except the title
-   bar and a strip at the bottom; that strip is the top of the details sheet,
-   which scrolls up over the pinned video. On upright ones (phones) the video is
-   pinned under the title bar and the details scroll beneath it. */
+   Fills the window. The video takes all of it except the title bar and a strip
+   at the bottom; that strip is the top of the details sheet, which scrolls up
+   over the pinned video. */
 .modal {
   --bar-h: 52px;
   --peek-h: 52px;
@@ -1158,6 +1157,9 @@ footer.site {
   margin: 0 auto;
   padding: 18px 24px 44px;
 }
+/* Upright screens (phones): same layout, but the player takes the video's own
+   shape once StreamPlayer knows it, so a vertical video fills the screen
+   instead of sitting inside a 16:9 band. Embeds stay 16:9. */
 @media (max-aspect-ratio: 1/1) {
   .modal-bar {
     padding-left: 16px;
@@ -1165,22 +1167,15 @@ footer.site {
   .modal-title {
     font-size: 18px;
   }
-  .modal-stage {
-    z-index: 2;
-    height: auto;
-  }
   .modal .player {
-    width: 100%;
-  }
-  .modal-info {
-    z-index: 1;
-    background: var(--paper);
+    aspect-ratio: var(--video-ratio, 16 / 9);
+    width: min(100%, calc(var(--stage-h) * var(--video-ratio, 16 / 9)));
   }
   .modal-peek {
-    display: none;
+    padding: 0 16px;
   }
   .modal .detail-body {
-    padding: 24px 16px 44px;
+    padding: 12px 16px 44px;
   }
 }
 

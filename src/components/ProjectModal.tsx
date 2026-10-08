@@ -48,11 +48,13 @@ export default function ProjectModal({
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  // Brings the details fully up over the video, or back down if they already are.
+  // Brings the details up over the lower half of the video, their first lines
+  // in view (not to their end: long ones would open on the last lines), or back
+  // down if they're already up.
   function toggleInfo() {
     const scroll = scrollRef.current!;
-    const max = scroll.scrollHeight - scroll.clientHeight;
-    scroll.scrollTo({ top: scroll.scrollTop < max / 2 ? max : 0, behavior: "smooth" });
+    const up = scroll.scrollTop > 0;
+    scroll.scrollTo({ top: up ? 0 : scroll.clientHeight * 0.55, behavior: "smooth" });
   }
 
   return (

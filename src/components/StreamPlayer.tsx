@@ -223,6 +223,14 @@ export default function StreamPlayer({
             else togglePlay();
           }}
           onDoubleClick={toggleFullscreen}
+          onLoadedMetadata={(e) => {
+            // The dialog shapes the player box (the parent) after the video on
+            // upright screens; see "project dialog" in globals.css.
+            const { videoWidth, videoHeight } = e.currentTarget;
+            if (videoWidth && videoHeight) {
+              rootRef.current?.parentElement?.style.setProperty("--video-ratio", String(videoWidth / videoHeight));
+            }
+          }}
           onLoadedData={() => setStarted(true)}
           onPlay={() => {
             setPlaying(true);
